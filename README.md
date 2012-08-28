@@ -1,7 +1,7 @@
 LikeLines-Player
 ============
 
-*Welcome to the new home for the LikeLines player component. The original prototype is still available on the [Knight-Mozilla repository](https://github.com/Knight-Mozilla/likelines-mojo). The revamped source code will be made online shortly.*
+*Welcome to the new home for the LikeLines player component. The original prototype is still available on the [Knight-Mozilla repository](https://github.com/Knight-Mozilla/likelines-mojo). The revamped source code will be put online shortly.*
 
 ## Introduction
 Conventional online video players do not make the inner structure of the video apparent, making it hard to jump straight to the interesting parts. LikeLines provides users with a navigable heat map of interesting regions for the videos they are watching. The novelty of LikeLines lies in its combination of content analysis and both explicit and implicit user interactions.
