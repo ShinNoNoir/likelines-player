@@ -1,0 +1,9 @@
+# Ignore Eclipse project files
+/.project
+/.pydevproject
+
+# Ignore server signature key
+/server/.likelines_secret_key
+
+# Ignore compiled Python files
+*.pyc
