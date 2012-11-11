@@ -302,7 +302,7 @@ LikeLines = {};
 		var cur_ts = new Date().getTime() / 1000;
 		var interaction = [cur_ts, evtType, this.getCurrentTime(), this.lastTickTC];
 		
-		var forceSend = evtType === 'ENDED';
+		var forceSend = evtType === 'ENDED' || evtType === 'LIKE';
 		this.backend.sendInteractions([interaction], forceSend);
 	};
 	
