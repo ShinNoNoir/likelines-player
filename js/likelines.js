@@ -170,7 +170,7 @@ LikeLines = {};
 		var firstLoad = prev_ytstate == undefined && evt.data == -1/*unstarted*/;
 		var subSequentLoad = prev_ytstate !== undefined && evt.data == YT.PlayerState.CUED;
 		if (firstLoad || subSequentLoad) {
-			this.llplayer.onVideoLoaded();
+			// this.llplayer.onVideoLoaded(); // TEMPORARY FIX (issue 1): move it to _fetchMetadata
 			
 			// TODO: _fetchMetadata seems to be slowish... 
 			//       Perhaps try to see if we can call this method earlier? 
@@ -188,6 +188,8 @@ LikeLines = {};
 					if (callback)
 						callback();
 				}
+				// TEMPORARY FIX (issue 1):
+				self.llplayer.onVideoLoaded();
 			});
 		}
 		
@@ -369,6 +371,8 @@ LikeLines = {};
 		
 		var d = this.getDuration();
 		var playback = LikeLines.Util.zeros(d);
+		
+		console.log('TODO: BUGFIX updateHeatmap call-site', d)
 		
 		this.backend.aggregate(function (aggregate) {
 			var playbacks = aggregate['playbacks'];
