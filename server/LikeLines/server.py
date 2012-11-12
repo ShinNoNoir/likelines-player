@@ -182,8 +182,8 @@ def index():
     ensure_session()
     return "LikeLines Backend server. Your user session id: %s" % session.get('session_id','--')
 
-@app.route("/destroy_session")
-def destroy_session():
+@app.route("/end_session")
+def end_session():
     # throws away (client-side) session information
     del session['session_id']
     return redirect(url_for('index'))
