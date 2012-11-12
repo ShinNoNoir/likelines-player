@@ -48,13 +48,34 @@
 		.loadVideo.active {
 			color: purple;
 		}
+		
+		#searchResults {
+		}
+		.videoResult {
+			float: left;
+			width: 150px;
+			height: 200px;
+			margin: 1px;
+			padding: 10px;
+			cursor: pointer;
+			
+			text-align: left;
+		}
+		.videoResult:hover {
+			background-color: gray;
+		}
+		.videoResult:hover .loadVideo:hover {
+			color: blue;
+		}
+		.ytThumbnail {
+		}
 	</style>
   </head>
   <body>
   	<h1>LikeLines demo</h1>
-  	
+	
   	<div id="playercontainer">
-    	<div id="player"></div>
+		<div id="player"></div>
 	</div>
 	<script type="text/javascript">
 		player = new LikeLines.Player('player', {
@@ -62,31 +83,20 @@
 			video: 'http://www.youtube.com/watch?v=wPTilA0XxYE',
 			backend: 'http://localhost:9090/',
 			onReady: function () {
-				console.log('AWESOME READY');
+				console.log('DEMO READY');
 			}
 		});
 	</script>
 	
-	<!--
-	<script type="text/javascript">
-		heatmap=player.gui.heatmap.computeHeatmap(45,
-			[0,39,28,40], /*likes*/
-			[50,50,40,40,10,10,0,0,0,0,0,0,0,0,0], /* playback */
-			undefined, /* seeks */
-			undefined /* mca */); 
-		player.gui.heatmap.paintHeatmap(heatmap);
-	</script>
-	-->
-	
-	
-	
 	<div id="democontrols">
 		<button id="toggleLL">Conventional player</button>
+		<button id="newUser">New User</button>
 	</div>
 	<div id="videos">
+		Featured videos:
 		<ul></ul>
 	</div>
-			
+	
 	<script type="text/javascript">
 		$('#toggleLL').click(function (evt) {
 			btn = evt.target;
@@ -101,20 +111,18 @@
 			}
 		});
 		
-		// Simulation: TODO
-		var sim_heatmap = [];
-		var toggle = true;
-		$(document).keypress(function(e) {
-			// Shift+T
-			if (e.which == 84) {
-				/*console.log('Timeshift', t);
-				threeStepsAnimation(t);
-				llplayer.paintHeatmap();
-				t = (t+1) % 4;*/
-				toggle = !toggle;
-				player.gui.heatmap.paintHeatmap(toggle ? heatmap : player.gui.heatmap.computeHeatmap());
+		(function () {
+			var backEndUrl = player.options.backend;
+			if (backEndUrl.charAt(backEndUrl.length-1) != '/') {
+				backEndUrl += '/';
 			}
-		});
+			var demoURL = document.URL;
+			var newUserURL = backEndUrl + 'end_session?redirect=' + window.encodeURIComponent(demoURL);
+			
+			$('#newUser').click(function (evt) {
+				window.location.replace(newUserURL);
+			});
+		})();
 		
 		var videos = [
 				/*{
@@ -131,18 +139,12 @@
 				}/*,
 				{
 					id: 'qmozsGBYAV8',
-					title: 'Stella McCartney: Summer 2010 Fashion Show',
-					heatmapArgs: [11*60+39
-					             ,[13,14,13, 29,30,29, 44,46,47, 58,59,60,61, 148, 199, 226, 280, 296, 566, 614]
-					             ,[2,0,0,0,0,1,0,0,0,0,0,0,1,0,0]]	
-				},
+					title: 'Stella McCartney: Summer 2010 Fashion Show'
+				}*/,
 				{
 					id: 'ogtG0ZKQOq4',
-					title: 'Snoring cat',
-					heatmapArgs: [45
-					             ,[0,39,28,40]
-					             ,[50,50,40,40,10,10,0,0,0,0,0,0,0,0,0]]	
-				}*/
+					title: 'Snoring cat'	
+				}
 			];
 		
 		$.each(videos, function(_,video) {
@@ -154,13 +156,67 @@
 						.click(function(){
 							$(this).addClass('visited');
 							player.loadVideo('http://youtu.be/' + video.id);
-							var heatmap = player.gui.heatmap.computeHeatmap.apply(
-								player.gui.heatmap,
-								video.heatmapArgs);
-							player.gui.heatmap.paintHeatmap(heatmap);
+							$('body').goTo();
 						});
 				});
 	</script>
 	
+	<script type="application/javascript">
+		// http://stackoverflow.com/questions/4801655/
+		jQuery.fn.goTo = function() {
+			$('html, body').animate({
+				scrollTop: $(this).offset().top + 'px'
+			}, 'slow');
+			return this;
+    	};
+	</script>
+	
+	<hr />
+
+	<div id="search">
+		<form onsubmit="ytSearch(); return false;" action="#">
+			<input type="text" id="searchQuery" placeholder="YouTube query" />
+			<button type="submit" >Search</button>
+		</form>
+		<div id="searchResults"></div>
+	</div>
+	<script type="text/javascript">
+		function ytSearch() {
+			var q = document.getElementById('searchQuery').value;
+			var url = 'https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&max-results=25&q=' +
+			          window.encodeURIComponent(q);
+			
+			jQuery.getJSON(url, function(json) {
+				if ('data' in json) {
+					var resultsDiv = $('#searchResults').empty();
+					console.log(json);
+					jQuery.each(json.data.items, function(i, item) {
+						console.log(item);
+						var id = item.id;
+						var title = item.title;
+						
+						var result = $('<div></div>').addClass('videoResult');
+						var thumbnail = $('<img>')
+							.attr('src', item.thumbnail.hqDefault)
+							.addClass('ytThumbnail')
+							.width(150);
+						
+						var title = $('<div>')
+							.text(item.title);
+						
+						result.click(function() {
+							player.loadVideo(item.player['default']);
+							$('body').goTo();
+						});
+						
+						result.append(thumbnail);
+						result.append(title);
+						resultsDiv.append(result);
+					});
+					$('#search').goTo();
+				}
+			});
+		}
+	</script>
   </body>
 </html>
