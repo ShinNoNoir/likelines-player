@@ -11,7 +11,7 @@ Conventional online video players do not make the inner structure of the video a
 The LikeLines system is being developed in the [Delft Multimedia Information Retrieval Lab](http://dmirlab.tudelft.nl/) at the Delft University of Technology.
 
 
-## ACM Multimedia 2012 Demo
+## Demo
 Running the demo requires:
 
  * A HTML5-compatible browser supporting the Canvas element and JavaScript.
@@ -44,7 +44,7 @@ $ cd likelines-player/server
 $ python -m LikeLines.server -p 9090
 ```
 
-When the three processes are running, please point your browser to [http://localhost:8080/examples/acmmm2012_demo.html](http://localhost:8080/examples/acmmm2012_demo.html) to start the demo.
+When the three processes are running, please point your browser to [http://localhost:8080/examples/demo.html](http://localhost:8080/examples/demo.html) to start the demo.
 
 ## Roadmap and plans
  * A new minor release is planned around November 12th, 2012, which will contain a more polished demo interface and should have a simpler way of running the demo.
