@@ -186,7 +186,8 @@ def index():
 def end_session():
     # throws away (client-side) session information
     del session['session_id']
-    return redirect(url_for('index'))
+    url = request.args.get('redirect', url_for('index'))
+    return redirect(url)
 
 @app.route("/clear_all")
 def clear_all():
