@@ -129,6 +129,8 @@ LikeLines = {};
 		
 		this.ytstate = undefined;
 		this._onVideoLoadedCallbacks = [];
+		this._videoLoaded = false; // YT
+		this._videoFullyLoaded = false; // YT+metadata
 		
 		this.ytplayer = undefined;
 		var self = this;
@@ -150,8 +152,9 @@ LikeLines = {};
 				playerVars: {
 					version: 3 /* gives early access to getDuration(), but only for first initial video */
 				}
-        	});
+			});
 		});
+		this._fetchMetadata(function() {self._checkVideoFullyLoaded();} );
 	};
 	LikeLines.YouTube.InternalPlayer.prototype.type = 'YouTube';
 	LikeLines.YouTube.InternalPlayer.prototype.onPlayerStateChange = function (evt) {
@@ -170,27 +173,8 @@ LikeLines = {};
 		var firstLoad = prev_ytstate == undefined && evt.data == -1/*unstarted*/;
 		var subSequentLoad = prev_ytstate !== undefined && evt.data == YT.PlayerState.CUED;
 		if (firstLoad || subSequentLoad) {
-			// this.llplayer.onVideoLoaded(); // TEMPORARY FIX (issue 1): move it to _fetchMetadata
-			
-			// TODO: _fetchMetadata seems to be slowish... 
-			//       Perhaps try to see if we can call this method earlier? 
-			
-			// TODO: Wait, do we actually need the duration at all? We only need it
-			//       for computing the like position --> only needed during playback?
-			//   !-> Wait #2: Not completely true. For displaying previous Likes, we
-			//       do need the duration. Still, we should decouple this from any
-			//       "onReady" callbacks like now.
-			var self = this;
-			this._fetchMetadata(function (){
-				if (subSequentLoad) {
-					var callback = self._onVideoLoadedCallbacks[ self.video[self.type] ];
-					delete self._onVideoLoadedCallbacks[ self.video[self.type] ];
-					if (callback)
-						callback();
-				}
-				// TEMPORARY FIX (issue 1):
-				self.llplayer.onVideoLoaded();
-			});
+			this._videoLoaded = true;
+			this._checkVideoFullyLoaded();
 		}
 		
 		var evtType = {
@@ -207,7 +191,23 @@ LikeLines = {};
 		
 		this.video = src;
 		this.metadata = undefined;
+		this._videoLoaded = false;
+		this._videoFullyLoaded = false;
 		this.ytplayer.cueVideoById(src[this.type]); // do not autoplay
+		
+		var self = this;
+		this._fetchMetadata(function() {self._checkVideoFullyLoaded();} );
+	};
+	LikeLines.YouTube.InternalPlayer.prototype._checkVideoFullyLoaded = function() {
+		if (!this._videoFullyLoaded && this.metadata !== undefined && this._videoLoaded) {
+			this._videoFullyLoaded = true;
+			this.llplayer.onVideoLoaded();
+			
+			var callback = this._onVideoLoadedCallbacks[ this.video[this.type] ];
+			delete this._onVideoLoadedCallbacks[ this.video[this.type] ];
+			if (callback)
+				callback();
+		}
 	};
 	LikeLines.YouTube.InternalPlayer.prototype.pause = function() {
 		this.ytplayer.pauseVideo();
@@ -371,8 +371,6 @@ LikeLines = {};
 		
 		var d = this.getDuration();
 		var playback = LikeLines.Util.zeros(d);
-		
-		console.log('TODO: BUGFIX updateHeatmap call-site', d)
 		
 		this.backend.aggregate(function (aggregate) {
 			var playbacks = aggregate['playbacks'];
