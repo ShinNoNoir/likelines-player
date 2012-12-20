@@ -150,7 +150,8 @@ LikeLines = {};
 					'onError': function (evt) { console.log('onError', evt); } // TODO: onError is not used. Idea: use metadata.error?
 				},
 				playerVars: {
-					version: 3 /* gives early access to getDuration(), but only for first initial video */
+					version: 3, /* gives early access to getDuration(), but only for first initial video */
+					rel: 0 /* temporary fix for issue 5 */
 				}
 			});
 		});
