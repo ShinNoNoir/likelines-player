@@ -47,4 +47,12 @@ $ python -m LikeLines.server -p 9090
 When the three processes are running, please point your browser to [http://localhost:8080/examples/demo.html](http://localhost:8080/examples/demo.html) to start the demo.
 
 ## Roadmap and plans
- * A new minor release is planned around November 12th, 2012, which will contain a more polished demo interface and should have a simpler way of running the demo.
+ * March 2013: Make LikeLines deployable on at least one cloud platform.
+ * March 2013: Finalize support for content analysis indexing.
+ * Future: Add HTML5 <video> support.
+ * Future: Improve UI.
+
+
+## Acknowledgments
+
+![CUbRIK](http://www.cubrikproject.eu/templates/rt_tachyon_j15/images/logo/light/logo.png)
