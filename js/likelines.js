@@ -939,35 +939,16 @@ LikeLines = {};
 			return LikeLines.Util.linspace(data[0], data[n-1], newSize);
 		}
 		
-		if (newSize < n) {
-			// smooth (for now a simple moving average)
-			var filterWidth = n - newSize + 1;
-			var smoothedData = [];
-			
-			var runningSum = 0;
-			for (var i = 0; i < filterWidth; i++) {
-				runningSum += data[i];
-			}
-			smoothedData[0] = runningSum / filterWidth;
-			for (var i = filterWidth, j = 1; j < newSize; i++, j++) {
-				runningSum += data[i];
-				runningSum -= data[i-1];
-				smoothedData[j] = runningSum / filterWidth;
-			}
-			
-			scaledArray = smoothedData;
+		// interpolate
+		var step = (n-1)/(newSize-1);
+		scaledArray = [];
+		for (var j = 0; j < newSize-1; j++) {
+			var x = j*step;
+			var i = Math.floor(x);
+			scaledArray[j] = data[i] + (x-i) * (data[i+1] - data[i]);
 		}
-		else {
-			// interpolate
-			var step = (n-1)/(newSize-1);
-			scaledArray = [];
-			for (var j = 0; j < newSize-1; j++) {
-				var x = j*step;
-				var i = Math.floor(x);
-				scaledArray[j] = data[i] + (x-i) * (data[i+1] - data[i]);
-			}
-			scaledArray[newSize-1] = data[n-1];
-		}
+		scaledArray[newSize-1] = data[n-1];
+		
 		return scaledArray;
 	}
 	
