@@ -62,6 +62,9 @@ LikeLines = {};
 		// Back-end Throttle
 		backendThrottle: 5.0, // 1 request per 5 seconds
 		
+		// Back-end read-only flag
+		backendReadOnly: false,
+		
 		// Not an option, but an auto-generated property:
 		videoCanonical: undefined
 	};
@@ -700,9 +703,11 @@ LikeLines = {};
 		this.buffer = [];
 		this.lastSend = 0;
 		this.sessionToken = undefined;
+		this.readonly = options['backendReadOnly'];
 		this.options = options || LikeLines.options.defaults;
 	}
 	LikeLines.BackendServer.prototype.createNewInteractionSession = function () {
+		if (this.readonly) return;
 		if (this.baseUrl === undefined) {
 			console.log('BackendServer.createNewInteractionSession(): Warning: no back-end specified');
 			return;
@@ -715,7 +720,6 @@ LikeLines = {};
 			videoId: this.videoId,
 			ts: cur_ts
 		}) + '&callback=?';
-		//console.log(url);
 		
 		jQuery.getJSON(url, function(json) {
 			self.sessionToken = json['token']
@@ -723,6 +727,7 @@ LikeLines = {};
 		return 0;
 	};
 	LikeLines.BackendServer.prototype.sendInteractions = function (interactions, forceSend) {
+		if (this.readonly) return;
 		if (this.baseUrl === undefined) {
 			console.log('BackendServer.sendInteractions(): Warning: no back-end specified');
 			return;
