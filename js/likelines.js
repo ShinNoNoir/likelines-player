@@ -461,7 +461,7 @@ LikeLines = {};
 		this.markersbar = document.createElement('div');
 		
 		this.canvas = document.createElement('canvas');
-		this.canvasWidth = LikeLines.options.defaults.width;
+		this.canvasWidth = gui.llplayer.options.width;
 		this.canvasHeight = 16;
 		
 		this.markers = []; // Contains timepoints (Number) for now
@@ -471,7 +471,7 @@ LikeLines = {};
 		            .append(this.markersbar);
 		$(this.heatmap).addClass('LikeLines heatmap')
 		               .append(this.canvas);
-		$(this.canvas).width(LikeLines.options.defaults.width)
+		$(this.canvas).width(this.canvasWidth)
 		              .height('100%')
 		              .prop({
 		                  width: this.canvasWidth,
