@@ -82,7 +82,7 @@
 		player = new LikeLines.Player('player', {
 			//video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
 			video: 'http://www.youtube.com/watch?v=wPTilA0XxYE',
-			backend: 'http://localhost:9090/',
+			backend: 'http://' + window.location.hostname + ':9090/',
 			//backendReadOnly: true,
 			onReady: function () {
 				console.log('DEMO READY');
