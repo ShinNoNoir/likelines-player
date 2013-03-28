@@ -50,7 +50,7 @@ def create_db(app):
     return mongo
 
 app = create_app()
-mongo = create_db(app)
+app.mongo = create_db(app)
 
 @app.before_request
 def ensure_session():
@@ -59,7 +59,7 @@ def ensure_session():
         print >>sys.stderr, 'Creating new session'
         session_id = uuid.uuid4().hex
         session['session_id'] = session_id
-        mongo.db.userSessions.insert(empty_session_object(session_id))
+        app.mongo.db.userSessions.insert(empty_session_object(session_id))
     else:
         print >>sys.stderr, 'Resuming previous session'
         session_id = session['session_id']
@@ -74,7 +74,7 @@ def empty_session_object(session_id):
 def get_serverside_session(session_id=None):
     if session_id is None:
         session_id = session['session_id']
-    return mongo.db.userSessions.find_one({'_id': session_id}) or empty_session_object(session_id)
+    return app.mongo.db.userSessions.find_one({'_id': session_id}) or empty_session_object(session_id)
 
 
 @app.route('/createSession')
@@ -85,6 +85,7 @@ def LL_create_session():
     ts = request.args.get('ts')
     session_id = session['session_id']
     
+    mongo = app.mongo
     mongo.db.interactionSessions.insert({
         '_id': token,
         'videoId': videoId,
@@ -100,6 +101,7 @@ def LL_create_session():
 @app.route('/sendInteractions')
 @jsonp
 def LL_send_interactions():
+    mongo = app.mongo
     error = None
     session_id = session['session_id']
     token = request.args.get('token')
@@ -168,7 +170,7 @@ def LL_aggregate():
     
     myLikes = userSession['likes'].get(videoId, [])
     
-    for interactionSession in mongo.db.interactionSessions.find({'videoId': videoId}):
+    for interactionSession in app.mongo.db.interactionSessions.find({'videoId': videoId}):
         numSessions += 1
         processInteractionSession(interactionSession['interactions'], playbacks, likedPoints)
     
@@ -191,12 +193,14 @@ def end_session():
 
 @app.route("/clear_all")
 def clear_all():
+    mongo = app.mongo
     mongo.db.userSessions.remove()
     mongo.db.interactionSessions.remove()
     return redirect(url_for('destroy_session'))
 
 @app.route("/dump")
 def dump_session():
+    mongo = app.mongo
     return jsonify({
         'userSessions': list(mongo.db.userSessions.find()),
         'interactionSessions': list(mongo.db.interactionSessions.find()),
