@@ -23,18 +23,24 @@ import json
 from functools import wraps
 from optparse import OptionParser
 
+default_config = {
+    'PERMANENT_SESSION_LIFETIME': 365*24*60*60,
+    
+    'MONGO_HOST': 'localhost',
+    'MONGO_PORT': '27017',
+    
+    'MONGO_USERNAME': None,
+    'MONGO_PASSWORD': None,
+    
+    'MONGO_DBNAME': 'LikeLinesDB'
+}
 
 def create_app():
     app = Flask(__name__)
     app.name = APP_NAME
     app.debug = True
     
-    app.config['PERMANENT_SESSION_LIFETIME'] = 365*24*60*60
-    app.config['MONGO_HOST'] = 'localhost'
-    app.config['MONGO_PORT'] = '27017'
-    app.config['MONGO_DBNAME'] = 'LikeLinesDB'
-    app.config['MONGO_USERNAME'] = None
-    app.config['MONGO_PASSWORD'] = None
+    app.config.update(default_config)
     
     return app
 
