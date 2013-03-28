@@ -1,17 +1,20 @@
 """
 Debug Blueprints.
 """
-from flask import Blueprint, current_app, redirect, jsonify, url_for
+from flask import Blueprint, current_app, redirect, jsonify, url_for, request
 
 debug_pages = Blueprint('debug', __name__)
 
 
-@debug_pages.route("/clear_all")
+@debug_pages.route("/clear_all", methods=['GET', 'POST'])
 def clear_all():
-    mongo = current_app.mongo
-    mongo.db.userSessions.remove()
-    mongo.db.interactionSessions.remove()
-    return redirect(url_for('destroy_session'))
+    if request.method == 'GET':
+        return '<form method="POST"><input type="submit" value="CLEAR DATABASE"></form>'
+    else:
+        mongo = current_app.mongo
+        mongo.db.userSessions.remove()
+        mongo.db.interactionSessions.remove()
+        return redirect(url_for('destroy_session'))
 
 
 @debug_pages.route("/dump")
