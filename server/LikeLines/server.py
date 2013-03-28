@@ -16,6 +16,8 @@ from flask import Flask, session, request, redirect, url_for, jsonify
 from flask.ext.pymongo import PyMongo
 from flaskutil import jsonp
 
+from debug import debug_pages
+
 import os, sys
 import base64
 import time
@@ -191,21 +193,7 @@ def end_session():
     url = request.args.get('redirect', url_for('index'))
     return redirect(url)
 
-@app.route("/clear_all")
-def clear_all():
-    mongo = app.mongo
-    mongo.db.userSessions.remove()
-    mongo.db.interactionSessions.remove()
-    return redirect(url_for('destroy_session'))
-
-@app.route("/dump")
-def dump_session():
-    mongo = app.mongo
-    return jsonify({
-        'userSessions': list(mongo.db.userSessions.find()),
-        'interactionSessions': list(mongo.db.interactionSessions.find()),
-    })
-
+app.register_blueprint(debug_pages)
 
 
 def _load_flask_secret_key():
