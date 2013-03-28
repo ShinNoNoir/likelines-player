@@ -12,8 +12,9 @@ DEFAULT_PORT = 9090
 SECRET_KEY_PATH = '.likelines_secret_key'
 KEY_STRENGTH = 24
 
-from flask import Flask, session, request, redirect, url_for, jsonify, current_app
+from flask import Flask, session, request, redirect, url_for, jsonify
 from flask.ext.pymongo import PyMongo
+from flaskutil import jsonp
 
 import os, sys
 import base64
@@ -74,21 +75,6 @@ def get_serverside_session(session_id=None):
     if session_id is None:
         session_id = session['session_id']
     return mongo.db.userSessions.find_one({'_id': session_id}) or empty_session_object(session_id)
-
-
-def jsonp(func):
-    """Wraps JSONified output for JSONP requests."""
-    @wraps(func)
-    def decorated_function(*args, **kwargs):
-        callback = request.args.get('callback', False)
-        if callback:
-            data = str(func(*args, **kwargs).data)
-            content = str(callback) + '(' + data + ')'
-            mimetype = 'application/javascript'
-            return current_app.response_class(content, mimetype=mimetype)
-        else:
-            return func(*args, **kwargs)
-    return decorated_function
 
 
 @app.route('/createSession')
