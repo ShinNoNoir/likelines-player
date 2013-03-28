@@ -24,18 +24,26 @@ from functools import wraps
 from optparse import OptionParser
 
 
-app = Flask(__name__)
-app.name = APP_NAME
-app.debug = True
+def create_app():
+    app = Flask(__name__)
+    app.name = APP_NAME
+    app.debug = True
+    
+    app.config['PERMANENT_SESSION_LIFETIME'] = 365*24*60*60
+    app.config['MONGO_HOST'] = 'localhost'
+    app.config['MONGO_PORT'] = '27017'
+    app.config['MONGO_DBNAME'] = 'LikeLinesDB'
+    app.config['MONGO_USERNAME'] = None
+    app.config['MONGO_PASSWORD'] = None
+    
+    return app
 
-app.config['PERMANENT_SESSION_LIFETIME'] = 365*24*60*60
-app.config['MONGO_HOST'] = 'localhost'
-app.config['MONGO_PORT'] = '27017'
-app.config['MONGO_DBNAME'] = 'LikeLinesDB'
-app.config['MONGO_USERNAME'] = None
-app.config['MONGO_PASSWORD'] = None
+def create_db(app):
+    mongo = PyMongo(app)
+    return mongo
 
-mongo = PyMongo(app)
+app = create_app()
+mongo = create_db(app)
 
 @app.before_request
 def ensure_session():
