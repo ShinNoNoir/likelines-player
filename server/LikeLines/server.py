@@ -17,7 +17,7 @@ from flask.ext.pymongo import PyMongo
 from flaskutil import jsonp
 
 from debug import debug_pages
-from usersession import ensure_session, get_serverside_session
+from usersession import ensure_session, get_serverside_session, get_session_id
 
 import os, sys
 import base64
@@ -61,7 +61,7 @@ def LL_create_session():
     token = uuid.uuid4().hex
     videoId = request.args.get('videoId')
     ts = request.args.get('ts')
-    session_id = session['session_id']
+    session_id = get_session_id()
     
     mongo = app.mongo
     mongo.db.interactionSessions.insert({
@@ -81,7 +81,7 @@ def LL_create_session():
 def LL_send_interactions():
     mongo = app.mongo
     error = None
-    session_id = session['session_id']
+    session_id = get_session_id()
     token = request.args.get('token')
     interactionSession = mongo.db.interactionSessions.find_one({'_id': token})
     if interactionSession:
