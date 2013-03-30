@@ -10,7 +10,6 @@ APP_NAME = 'LikeLines Server'
 DEFAULT_HOST = '0.0.0.0'
 DEFAULT_PORT = 9090
 SECRET_KEY_PATH = '.likelines_secret_key'
-KEY_STRENGTH = 24
 
 from flask import Flask, session, request, redirect, url_for
 from flask.ext.pymongo import PyMongo
