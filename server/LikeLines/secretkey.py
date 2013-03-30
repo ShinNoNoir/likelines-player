@@ -8,10 +8,13 @@ import os
 import sys
 import base64
 
+def generate_secret_key():
+    return base64.b64encode(os.urandom(KEY_STRENGTH))
+    
 def load_secret_key(app, path):
     if not os.path.exists(path):
         print >>sys.stderr, '*** Storing server secret key in "%s"...' % path
-        secret_key = base64.b64encode(os.urandom(KEY_STRENGTH))
+        secret_key = generate_secret_key()
         fh = open(path, 'w')
         print >>fh, secret_key
         fh.close()
