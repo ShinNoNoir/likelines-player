@@ -15,7 +15,7 @@ from flask import Flask, session, request, redirect, url_for
 from flask.ext.pymongo import PyMongo
 
 from debug import debug_pages
-from usersession import ensure_session
+from usersession import ensure_session, get_session_id
 import api
 
 from secretkey import load_secret_key
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     
     @app.route("/")
     def index():
-        return "LikeLines Backend server. Your user session id: %s" % session.get('session_id','--')
+        return "LikeLines Backend server. Your user session id: %s" % get_session_id()
     
     @app.route("/end_session")
     def end_session():
