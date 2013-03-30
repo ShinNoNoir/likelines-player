@@ -81,7 +81,6 @@ if __name__ == "__main__":
     
     @app.route("/")
     def index():
-        ensure_session()
         return "LikeLines Backend server. Your user session id: %s" % session.get('session_id','--')
     
     @app.route("/end_session")
