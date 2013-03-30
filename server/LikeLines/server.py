@@ -69,15 +69,15 @@ def end_session():
 app.register_blueprint(debug_pages)
 
 
-def _load_flask_secret_key():
-    if not os.path.exists(SECRET_KEY_PATH):
-        print >>sys.stderr, '*** Storing server secret key in "%s"...' % SECRET_KEY_PATH
+def _load_flask_secret_key(app, path):
+    if not os.path.exists(path):
+        print >>sys.stderr, '*** Storing server secret key in "%s"...' % path
         secret_key = base64.b64encode(os.urandom(KEY_STRENGTH))
-        fh = open(SECRET_KEY_PATH, 'w')
+        fh = open(path, 'w')
         print >>fh, secret_key
         fh.close()
     else:
-        fh = open(SECRET_KEY_PATH, 'r')
+        fh = open(path, 'r')
         secret_key = fh.readline().strip()
         fh.close()
     
@@ -104,6 +104,6 @@ def get_optionparser():
 
 if __name__ == "__main__":
     options, _ = get_optionparser().parse_args()
-    _load_flask_secret_key()
+    _load_flask_secret_key(app, SECRET_KEY_PATH)
     app.run(port = options.port, host=options.host)
 
