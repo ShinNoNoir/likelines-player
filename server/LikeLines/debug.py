@@ -14,7 +14,7 @@ def clear_all():
         mongo = current_app.mongo
         mongo.db.userSessions.remove()
         mongo.db.interactionSessions.remove()
-        return redirect(url_for('destroy_session'))
+        return redirect(url_for('end_session'))
 
 
 @debug_pages.route("/dump")
