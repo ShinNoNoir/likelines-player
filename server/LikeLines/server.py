@@ -90,6 +90,6 @@ if __name__ == "__main__":
         return redirect(url)
     
     app.register_blueprint(debug_pages)
-    load_secret_key(app, SECRET_KEY_PATH)
+    load_secret_key(SECRET_KEY_PATH, app)
     app.run(port = options.port, host=options.host)
 
