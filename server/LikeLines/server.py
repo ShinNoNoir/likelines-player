@@ -43,6 +43,9 @@ def create_app(config=None):
     app.name = APP_NAME
     
     app.config.update(default_config)
+    if config is not None:
+        app.config.update(config)
+    
     app.before_request(ensure_session)
     app.register_blueprint(api.blueprint)
     
