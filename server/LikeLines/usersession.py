@@ -30,6 +30,9 @@ def empty_session_object(session_id):
         'ts': time.time()
     }
 
+def get_session_id():
+    return session['session_id']
+
 def get_serverside_session(session_id=None):
     if session_id is None:
         session_id = session['session_id']
