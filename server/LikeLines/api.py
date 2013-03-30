@@ -6,8 +6,8 @@ from flask import Blueprint, current_app, jsonify, request
 from flaskutil import jsonp
 
 from usersession import get_session_id, get_serverside_session
+from tokengen import generate_unique_token
 
-import uuid
 import json
 
 blueprint = Blueprint('api', __name__)
@@ -16,7 +16,7 @@ blueprint = Blueprint('api', __name__)
 @blueprint.route('/createSession')
 @jsonp
 def LL_create_session():
-    token = uuid.uuid4().hex
+    token = generate_unique_token()
     videoId = request.args.get('videoId')
     ts = request.args.get('ts')
     session_id = get_session_id()

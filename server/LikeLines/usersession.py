@@ -6,9 +6,9 @@ Future features to be implemented:
 """
 
 from flask import session, current_app
+from tokengen import generate_unique_token
 
 import sys
-import uuid
 import time
 
 
@@ -16,7 +16,7 @@ def ensure_session():
     session.permanent = True
     if 'session_id' not in session:
         print >>sys.stderr, 'Creating new session'
-        session_id = uuid.uuid4().hex
+        session_id = generate_unique_token()
         session['session_id'] = session_id
         current_app.mongo.db.userSessions.insert(empty_session_object(session_id))
     else:
