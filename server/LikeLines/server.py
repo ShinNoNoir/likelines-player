@@ -55,25 +55,6 @@ def create_db(app):
     mongo = PyMongo(app)
     return mongo
 
-app = create_app()
-app.mongo = create_db(app)
-
-
-@app.route("/")
-def index():
-    ensure_session()
-    return "LikeLines Backend server. Your user session id: %s" % session.get('session_id','--')
-
-@app.route("/end_session")
-def end_session():
-    # throws away (client-side) session information
-    del session['session_id']
-    url = request.args.get('redirect', url_for('index'))
-    return redirect(url)
-
-app.register_blueprint(debug_pages)
-
-
 def get_optionparser():
     qualified_module_name = '%s.%s' % (__package__, os.path.splitext(os.path.basename(__file__))[0])
     parser = OptionParser(usage='usage: python -m %s [OPTION]' % qualified_module_name)
@@ -94,6 +75,23 @@ def get_optionparser():
 
 if __name__ == "__main__":
     options, _ = get_optionparser().parse_args()
+    
+    app = create_app()
+    app.mongo = create_db(app)
+    
+    @app.route("/")
+    def index():
+        ensure_session()
+        return "LikeLines Backend server. Your user session id: %s" % session.get('session_id','--')
+    
+    @app.route("/end_session")
+    def end_session():
+        # throws away (client-side) session information
+        del session['session_id']
+        url = request.args.get('redirect', url_for('index'))
+        return redirect(url)
+    
+    app.register_blueprint(debug_pages)
     load_secret_key(app, SECRET_KEY_PATH)
     app.run(port = options.port, host=options.host)
 
