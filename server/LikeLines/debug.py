@@ -2,6 +2,7 @@
 Debug Blueprints.
 """
 from flask import Blueprint, current_app, redirect, jsonify, url_for, request
+from usersession import get_session_id
 
 debug_pages = Blueprint('debug', __name__)
 
@@ -21,6 +22,7 @@ def clear_all():
 def dump_session():
     mongo = current_app.mongo
     return jsonify({
+        "session['session_id']": get_session_id(),
         'userSessions': list(mongo.db.userSessions.find()),
         'interactionSessions': list(mongo.db.interactionSessions.find()),
     })
