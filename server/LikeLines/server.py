@@ -25,6 +25,8 @@ import os
 from optparse import OptionParser
 
 default_config = {
+    'DEBUG': True,
+    
     'PERMANENT_SESSION_LIFETIME': 365*24*60*60,
     
     'MONGO_HOST': 'localhost',
@@ -36,10 +38,9 @@ default_config = {
     'MONGO_DBNAME': 'LikeLinesDB'
 }
 
-def create_app():
+def create_app(config=None):
     app = Flask(__name__)
     app.name = APP_NAME
-    app.debug = True
     
     app.config.update(default_config)
     app.before_request(ensure_session)
