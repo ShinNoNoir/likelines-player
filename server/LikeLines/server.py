@@ -21,8 +21,7 @@ import api
 
 from secretkey import load_secret_key
 
-import os, sys
-import base64
+import os
 from optparse import OptionParser
 
 default_config = {
