@@ -23,7 +23,6 @@ import base64
 import time
 import uuid
 import json
-from functools import wraps
 from optparse import OptionParser
 
 default_config = {
