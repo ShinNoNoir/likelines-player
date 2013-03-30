@@ -19,6 +19,8 @@ from debug import debug_pages
 from usersession import ensure_session
 import api
 
+from secretkey import load_secret_key
+
 import os, sys
 import base64
 from optparse import OptionParser
@@ -69,21 +71,6 @@ def end_session():
 app.register_blueprint(debug_pages)
 
 
-def _load_flask_secret_key(app, path):
-    if not os.path.exists(path):
-        print >>sys.stderr, '*** Storing server secret key in "%s"...' % path
-        secret_key = base64.b64encode(os.urandom(KEY_STRENGTH))
-        fh = open(path, 'w')
-        print >>fh, secret_key
-        fh.close()
-    else:
-        fh = open(path, 'r')
-        secret_key = fh.readline().strip()
-        fh.close()
-    
-    app.secret_key = secret_key
-
-
 def get_optionparser():
     qualified_module_name = '%s.%s' % (__package__, os.path.splitext(os.path.basename(__file__))[0])
     parser = OptionParser(usage='usage: python -m %s [OPTION]' % qualified_module_name)
@@ -104,6 +91,6 @@ def get_optionparser():
 
 if __name__ == "__main__":
     options, _ = get_optionparser().parse_args()
-    _load_flask_secret_key(app, SECRET_KEY_PATH)
+    load_secret_key(app, SECRET_KEY_PATH)
     app.run(port = options.port, host=options.host)
 
