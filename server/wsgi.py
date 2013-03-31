@@ -40,7 +40,7 @@ def end_session():
     url = request.args.get('redirect', url_for('index'))
     return redirect(url)
 
-app.register_blueprint(debug_pages)
+#app.register_blueprint(debug_pages)
 load_secret_key('/home/dotcloud/current/.likelines_secret_key', app)
 
 application = app
