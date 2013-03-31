@@ -64,6 +64,64 @@ Optional configuration parameters include:
  * `onReady` callback that is called when the LikeLines player is fully loaded.
 
 
+## Installing the LikeLines server
+In case you want to run your own LikeLines backend server, you have two options.
+You can either install the required software on your own machine or 
+deploy it on the dotCloud application platform.
+
+### On your own computer or server
+#### Prerequisites
+The LikeLines server requires Python 2.6 or 2.7 to run, which can be obtained 
+from http://www.python.org/download/, and [MongoDB](http://www.mongodb.org/downloads)
+for storage.
+
+In addition to Python and MongoDB, the following Python packages are needed:
+ * Flask
+ * PyMongo
+ * Flask-PyMongo
+
+The simplest way of installing these packages is using `pip`. You can install
+`pip` by first installing `easy_install` by following the instructions 
+[listed on this page](https://pypi.python.org/pypi/setuptools).
+You can then execute the following command in a terminal to obtain `pip`:
+```sh
+$ easy_install pip
+```
+
+The required Python packages can then be installed as follows:
+```sh
+$ pip install Flask
+$ pip install PyMongo
+$ pip install Flask-PyMongo
+```
+*Note: Windows users should follow PyMongo installation instructions*
+*[listed here](http://api.mongodb.org/python/current/installation.html).*
+
+#### Running the server
+This section assumes you have downloaded the full LikeLines source code
+via `git` or through the Github Web interface. Once downloaded and unpacked 
+to a directory, the following two processes need to be started.
+
+The first process to be started is a MongoDB server on the the default port. 
+You can start the MongoDB server by simply executing `mongod` in a terminal:
+
+```sh
+$ mongod
+```
+
+The second process is the actual LikeLines backend server that will 
+receive requests to store and aggregate user playback behaviour.
+To start this process, go into the `server` subdirectory and run
+the `LikeLines.server` Python module. The example below shows how
+to run the LikeLines server on port 9090.
+
+```sh
+$ cd likelines_source/server
+$ python -m LikeLines.server -p 9090
+```
+
+
+
 ## Demo
 Running the demo requires:
 
