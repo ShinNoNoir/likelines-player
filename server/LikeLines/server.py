@@ -2,10 +2,6 @@
 # License: MIT
 # Author: Raynor Vliegendhart
 
-# Future features to be implemented:
-#  * Notion of "users" s.t. multiple sessions can be linked to a single user 
-#
-
 APP_NAME = 'LikeLines Server'
 DEFAULT_HOST = '0.0.0.0'
 DEFAULT_PORT = 9090
