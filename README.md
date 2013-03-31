@@ -120,6 +120,21 @@ $ cd likelines_source/server
 $ python -m LikeLines.server -p 9090
 ```
 
+### Deploying to dotCloud
+LikeLines supports deploying a server to the dotCloud platform 
+out of the box. Instructions on installing the dotCloud tool and 
+configuring it can be found [here](http://docs.dotcloud.com/firststeps/install/).
+
+Once dotCloud has been set up, download the full LikeLines source code 
+either via `git` or through the Github Web interface. Then use a terminal 
+to go into the LikeLines source code directory and enter the following 
+commands to deploy the LikeLines server to the dotCloud platform:
+
+```sh
+$ cd likelines_source
+$ dotcloud create likelines
+$ dotcloud push
+```
 
 
 ## Running the demo example
