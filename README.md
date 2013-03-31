@@ -19,6 +19,39 @@ The LikeLines system is being developed in the
 [Delft Multimedia Information Retrieval Lab](http://dmirlab.tudelft.nl/) 
 at the Delft University of Technology.
 
+## Using LikeLines on your Web page
+Using LikeLines on your Web page is quite easy.
+First, the following libraries and files are needed:
+
+ * jQuery >= 1.7.2
+ * likelines.js
+ * likelines.css
+
+These need to be included in the `<head>` of your Web page.
+For example:
+```html
+  <head>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  	<script src="/js/likelines.js"></script>
+	<link rel="stylesheet" href="/css/likelines.css">
+  </head>
+```
+Just make sure that jQuery is loaded *before* the LikeLines script is included.
+
+Finally, put a `div` with an `id` in your Web page where you want the 
+LikeLines player to appear and create a new `LikeLines.Player` object
+in JavaScript like in the example below:
+```html
+  <div id="myFirstLikeLinesPlayer"></div>
+  <script>
+    player = new LikeLines.Player('myFirstLikeLinesPlayer', {
+	  video: 'http://www.youtube.com/watch?v=wPTilA0XxYE',
+	  backend: 'http://likelinesserver/'
+    });
+  </script>
+```
+
+
 
 ## Demo
 Running the demo requires:
