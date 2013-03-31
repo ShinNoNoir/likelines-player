@@ -71,6 +71,8 @@ to start the demo.
  * March 2013: Finalize support for content analysis indexing.
  * Future: Add HTML5 <video> support.
  * Future: Improve UI.
+ * Future: Introduce a [SMILA](http://www.eclipse.org/smila/) component 
+   that treats a LikeLines server as a data source for indexing purposes.
 
 
 ## Acknowledgments
