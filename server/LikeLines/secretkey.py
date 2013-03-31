@@ -25,3 +25,7 @@ def load_secret_key(path, app=None):
     
     if app is not None:
         app.secret_key = secret_key
+
+if __name__ == '__main__':
+    print generate_secret_key()
+
