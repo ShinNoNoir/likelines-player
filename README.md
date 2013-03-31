@@ -46,11 +46,22 @@ in JavaScript like in the example below:
   <script>
     player = new LikeLines.Player('myFirstLikeLinesPlayer', {
 	  video: 'http://www.youtube.com/watch?v=wPTilA0XxYE',
-	  backend: 'http://likelinesserver/'
+	  backend: 'http://likelines-shinnonoir.dotcloud.com/'
     });
   </script>
 ```
 
+The `LikeLines.Player` constructor requires to arguments:
+ 1. A `div` or its `id` in which the LikeLines player will be embedded. 
+ 2. A configuration object.
+
+The configuration object requires at the minimum a `video` entry pointing
+to the video that needs to be played and a `backend` entry pointing to an
+existing LikeLines server.
+
+Optional configuration parameters include:
+ * `width` and `height` for the internal video player.
+ * `onReady` callback that is called when the LikeLines player is fully loaded.
 
 
 ## Demo
