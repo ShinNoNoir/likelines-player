@@ -122,51 +122,28 @@ $ python -m LikeLines.server -p 9090
 
 
 
-## Demo
+## Running the demo example
 Running the demo requires:
 
  * A HTML5-compatible browser supporting the Canvas element and JavaScript.
  * Internet access (for the YouTube API and jQuery library).
- * Python 2.6+ (for the backend reference implementation) 
-   with the following packages:
-     * Flask
-     * PyMongo
-     * Flask-PyMongo
- * MongoDB (for the backend).
+ * The LikeLines server running on the local machine
+   (see instructions above).
 
-You can download the code via `git` or through the Github web interface. 
-Once downloaded and unpacked to a directory, three processes need to be 
-started in order to run the demo. These three processes can best be run 
-in separate terminals or screens.
-
-The first process is starting a web server (or use an existing one) which 
-will serve demo web page and the LikeLines JavaScript library. Note that 
-you cannot simply open the web page locally (the browser would simply 
-refuse to execute JavaScript in a local context):
+The demo also requires a Web server that will serve `examples/demo.html`.
+Note that you cannot simply open the web page locally (the browser would 
+simply refuse to execute JavaScript in a local context).
+A simple way of hosting the demo example is to use Python's builtin
+HTTP server:
 
 ```sh
-$ cd likelines-player
+$ cd likelines_source
 $ python -m SimpleHTTPServer 8080
 ```
 
-Next step is to make sure a MongoDB server is running on the default port. 
-You can start the MongoDB server by simply executing `mongod`:
-
-```sh
-$ mongod
-```
-
-The final step is to run the backend server for LikeLines. This server will 
-receive requests to store and aggregate user playback behaviour:
-
-```sh
-$ cd likelines-player/server
-$ python -m LikeLines.server -p 9090
-```
-
-When the three processes are running, please point your browser to 
-[http://localhost:8080/examples/demo.html](http://localhost:8080/examples/demo.html) 
-to start the demo.
+Assuming the LikeLines server is already running on the same machine, 
+the demo can be started by pointing your HTML5-compatible browser to 
+[http://localhost:8080/examples/demo.html](http://localhost:8080/examples/demo.html).
 
 ## Roadmap and plans
  * March 2013: Make LikeLines deployable on at least one cloud platform.
