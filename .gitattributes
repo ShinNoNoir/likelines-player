@@ -1,0 +1,7 @@
+
+# Force LF
+*.sh text eol=lf
+
+# Binary
+*.png binary
+*.jpg binary
