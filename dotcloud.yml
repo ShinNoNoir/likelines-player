@@ -1,0 +1,6 @@
+www:
+  type: python
+  approot: server
+  postbuild: ./create_key.sh
+db:
+  type: mongodb

@@ -7,3 +7,6 @@
 
 # Ignore compiled Python files
 *.pyc
+
+# Ignore dotCloud files
+/.dotcloud
