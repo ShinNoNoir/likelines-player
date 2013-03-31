@@ -5,7 +5,7 @@ Future features to be implemented:
  * Notion of "users" s.t. multiple sessions can be linked to a single user 
 """
 
-from flask import session, current_app
+from flask import session, current_app, request
 from tokengen import generate_unique_token
 
 import sys
@@ -13,6 +13,11 @@ import time
 
 
 def ensure_session():
+    # Don't create a session if there is no endpoint, e.g., favicon.ico
+    # (Browsers don't send cookies for security reasons for favicon.ico)
+    if request.endpoint is None:
+        return
+    
     session.permanent = True
     if 'session_id' not in session:
         print >>sys.stderr, 'Creating new session'
