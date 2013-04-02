@@ -82,9 +82,19 @@
 		<div id="player"></div>
 	</div>
 	<script type="text/javascript">
+		function setLocationHash() {
+			window.location.hash = player.options.videoCanonical;
+		}
+		if (window.location.hash.substring(0,9) === '#YouTube:') {
+			var load_video_id = window.location.hash.substring(9);
+		}
+		else {
+			var load_video_id = 'wPTilA0XxYE';
+		}
+		
 		player = new LikeLines.Player('player', {
 			//video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
-			video: 'http://www.youtube.com/watch?v=wPTilA0XxYE',
+			video: 'http://www.youtube.com/watch?v=' + load_video_id,
 			backend: 'http://' + window.location.hostname + '/',
 			//backendReadOnly: true,
 			onReady: function () {
@@ -160,7 +170,7 @@
 						.text(video.title)
 						.click(function(){
 							$(this).addClass('visited');
-							player.loadVideo('http://youtu.be/' + video.id);
+							player.loadVideo('http://youtu.be/' + video.id, function(){setLocationHash();} );
 							$('body').goTo();
 						});
 				});
@@ -210,7 +220,7 @@
 							.text(item.title);
 						
 						result.click(function() {
-							player.loadVideo(item.player['default']);
+							player.loadVideo(item.player['default'], function(){setLocationHash();} );
 							$('body').goTo();
 						});
 						
