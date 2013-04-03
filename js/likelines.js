@@ -396,7 +396,7 @@ LikeLines = {};
 					var begin = Math.floor(playedSegment[0]);
 					var end = Math.floor(playedSegment[1]);
 					
-					for (var s=begin; s <= end; s++) {
+					for (var s=begin; s <= end && s < d; s++) {
 						playback[s]++;
 					}
 				}
