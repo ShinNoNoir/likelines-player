@@ -1,262 +1,262 @@
 <!DOCTYPE html>
 <html>
   <head>
-  	<title>LikeLines demo</title>
-  	<meta property="og:title" content="LikeLines demo" />
-  	<meta property="og:image" content="http://likelines-shinnonoir.dotcloud.com/images/logoicon.png" />
-  	<meta property="og:description" content="LikeLines player demo. Feedback and re-sharing appreciated! :)" />
-  	<link rel="shortcut icon" href="/images/favicon.ico" />
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  	<script src="../js/likelines.js"></script>
-	<link rel="stylesheet" href="../css/likelines.css">
-	<style type="text/css">
-		body {
-			font-family: Arial, Helvetica, sans-serif;
-			text-align: center;
-		}
-		
-		#playercontainer {
-			background: #444;
-			padding: 20px;
-		}
-		
-		#democontrols {
-			position: absolute;
-			top: 10px;
-			right: 10px;
-			text-align: center;
-		}
-		#toggleLL {
-			width: 12em;
-		}
-		#videos {
-			margin-top: 20px;
-			margin-bottom: 10px;
-		}
-		#videos ul {
-			list-style: none;
-			margin: 0;
-		}
-		#videos li {
-			display: inline;
-			margin-right: 10px;
-		}
+      <title>LikeLines demo</title>
+      <meta property="og:title" content="LikeLines demo" />
+      <meta property="og:image" content="http://likelines-shinnonoir.dotcloud.com/images/logoicon.png" />
+      <meta property="og:description" content="LikeLines player demo. Feedback and re-sharing appreciated! :)" />
+      <link rel="shortcut icon" href="/images/favicon.ico" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <script src="../js/likelines.js"></script>
+    <link rel="stylesheet" href="../css/likelines.css">
+    <style type="text/css">
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+        
+        #playercontainer {
+            background: #444;
+            padding: 20px;
+        }
+        
+        #democontrols {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: center;
+        }
+        #toggleLL {
+            width: 12em;
+        }
+        #videos {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        #videos ul {
+            list-style: none;
+            margin: 0;
+        }
+        #videos li {
+            display: inline;
+            margin-right: 10px;
+        }
 
-		.loadVideo {
-			text-decoration: underline;
-			cursor: pointer;
-			color: blue;
-		}
-		.loadVideo:hover {
-			color: red;
-		}
-		.loadVideo.active {
-			color: purple;
-		}
-		
-		#searchResults {
-		}
-		.videoResult {
-			float: left;
-			width: 150px;
-			height: 200px;
-			margin: 1px;
-			padding: 10px;
-			cursor: pointer;
-			
-			text-align: left;
-		}
-		.videoResult:hover {
-			background-color: gray;
-		}
-		.videoResult:hover .loadVideo:hover {
-			color: blue;
-		}
-		.ytThumbnail {
-		}
-		
-		#footer {
-			clear: left;
-			font-size: smaller;
-			color: gray;
-			margin-top: 5em;
-		}
-		#footer a {
-			color: darkslategrey;
-			text-decoration: none;
-		}
-	</style>
+        .loadVideo {
+            text-decoration: underline;
+            cursor: pointer;
+            color: blue;
+        }
+        .loadVideo:hover {
+            color: red;
+        }
+        .loadVideo.active {
+            color: purple;
+        }
+        
+        #searchResults {
+        }
+        .videoResult {
+            float: left;
+            width: 150px;
+            height: 200px;
+            margin: 1px;
+            padding: 10px;
+            cursor: pointer;
+            
+            text-align: left;
+        }
+        .videoResult:hover {
+            background-color: gray;
+        }
+        .videoResult:hover .loadVideo:hover {
+            color: blue;
+        }
+        .ytThumbnail {
+        }
+        
+        #footer {
+            clear: left;
+            font-size: smaller;
+            color: gray;
+            margin-top: 5em;
+        }
+        #footer a {
+            color: darkslategrey;
+            text-decoration: none;
+        }
+    </style>
   </head>
   <body>
-  	<h1>LikeLines demo</h1>
-	
-  	<div id="playercontainer">
-		<div id="player"></div>
-	</div>
-	<script type="text/javascript">
-		function setLocationHash() {
-			window.location.hash = player.options.videoCanonical;
-		}
-		if (window.location.hash.substring(0,9) === '#YouTube:') {
-			var load_video_id = window.location.hash.substring(9);
-		}
-		else {
-			var load_video_id = 'wPTilA0XxYE';
-		}
-		
-		player = new LikeLines.Player('player', {
-			//video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
-			video: 'http://www.youtube.com/watch?v=' + load_video_id,
-			backend: 'http://' + window.location.hostname + '/',
-			//backendReadOnly: true,
-			onReady: function () {
-				console.log('DEMO READY');
-			}
-		});
-	</script>
-	
-	<div id="democontrols">
-		<button id="toggleLL">Conventional player</button>
-		<button id="newUser">New User</button>
-	</div>
-	<div id="videos">
-		Featured videos:
-		<ul></ul>
-	</div>
-	
-	<script type="text/javascript">
-		$('#toggleLL').click(function (evt) {
-			btn = evt.target;
-			if (btn.textContent == 'Conventional player') {
-				btn.textContent = 'LikeLines player';
-				$('.LikeLines').css('visibility', 'hidden');
-				$('.LikeLines .video').css('visibility', 'visible');
-			}
-			else {
-				btn.textContent = 'Conventional player';
-				$('.LikeLines').css('visibility', 'visible');
-			}
-		});
-		
-		(function () {
-			var backEndUrl = player.options.backend;
-			if (backEndUrl.charAt(backEndUrl.length-1) != '/') {
-				backEndUrl += '/';
-			}
-			var demoURL = document.URL;
-			var newUserURL = backEndUrl + 'end_session?redirect=' + window.encodeURIComponent(demoURL);
-			
-			$('#newUser').click(function (evt) {
-				window.location.replace(newUserURL);
-			});
-		})();
-		
-		var videos = [
-				/*{
-					id: 'Jd3-eiid-Uw',
-					title: 'Wii Remote Head-tracking'
-				},
-				{
-					id: '_DeQUW-bFZ0',
-					title: 'Nintendo E3 press conf'	
-				},*/
-				{
-					id: 'wPTilA0XxYE',
-					title: 'Cat experiments'	
-				},
-				{
-					id: 'qmozsGBYAV8',
-					title: 'Stella McCartney: Summer 2010 Fashion Show'
-				},
-				{
-					id: 'ogtG0ZKQOq4',
-					title: 'Snoring cat'	
-				}
-			];
-		
-		$.each(videos, function(_,video) {
-					$('#videos ul')
-						.append('<li><span></span></li>')
-						.find('span:last')
-						.addClass('loadVideo')
-						.text(video.title)
-						.click(function(){
-							$(this).addClass('visited');
-							player.loadVideo('http://youtu.be/' + video.id, function(){setLocationHash();} );
-							$('body').goTo();
-						});
-				});
-	</script>
-	
-	<script type="application/javascript">
-		// http://stackoverflow.com/questions/4801655/
-		jQuery.fn.goTo = function() {
-			$('html, body').animate({
-				scrollTop: $(this).offset().top + 'px'
-			}, 'slow');
-			return this;
-    	};
-	</script>
-	
-	<hr />
+      <h1>LikeLines demo</h1>
+    
+      <div id="playercontainer">
+        <div id="player"></div>
+    </div>
+    <script type="text/javascript">
+        function setLocationHash() {
+            window.location.hash = player.options.videoCanonical;
+        }
+        if (window.location.hash.substring(0,9) === '#YouTube:') {
+            var load_video_id = window.location.hash.substring(9);
+        }
+        else {
+            var load_video_id = 'wPTilA0XxYE';
+        }
+        
+        player = new LikeLines.Player('player', {
+            //video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
+            video: 'http://www.youtube.com/watch?v=' + load_video_id,
+            backend: 'http://' + window.location.hostname + '/',
+            //backendReadOnly: true,
+            onReady: function () {
+                console.log('DEMO READY');
+            }
+        });
+    </script>
+    
+    <div id="democontrols">
+        <button id="toggleLL">Conventional player</button>
+        <button id="newUser">New User</button>
+    </div>
+    <div id="videos">
+        Featured videos:
+        <ul></ul>
+    </div>
+    
+    <script type="text/javascript">
+        $('#toggleLL').click(function (evt) {
+            btn = evt.target;
+            if (btn.textContent == 'Conventional player') {
+                btn.textContent = 'LikeLines player';
+                $('.LikeLines').css('visibility', 'hidden');
+                $('.LikeLines .video').css('visibility', 'visible');
+            }
+            else {
+                btn.textContent = 'Conventional player';
+                $('.LikeLines').css('visibility', 'visible');
+            }
+        });
+        
+        (function () {
+            var backEndUrl = player.options.backend;
+            if (backEndUrl.charAt(backEndUrl.length-1) != '/') {
+                backEndUrl += '/';
+            }
+            var demoURL = document.URL;
+            var newUserURL = backEndUrl + 'end_session?redirect=' + window.encodeURIComponent(demoURL);
+            
+            $('#newUser').click(function (evt) {
+                window.location.replace(newUserURL);
+            });
+        })();
+        
+        var videos = [
+                /*{
+                    id: 'Jd3-eiid-Uw',
+                    title: 'Wii Remote Head-tracking'
+                },
+                {
+                    id: '_DeQUW-bFZ0',
+                    title: 'Nintendo E3 press conf'    
+                },*/
+                {
+                    id: 'wPTilA0XxYE',
+                    title: 'Cat experiments'    
+                },
+                {
+                    id: 'qmozsGBYAV8',
+                    title: 'Stella McCartney: Summer 2010 Fashion Show'
+                },
+                {
+                    id: 'ogtG0ZKQOq4',
+                    title: 'Snoring cat'    
+                }
+            ];
+        
+        $.each(videos, function(_,video) {
+                    $('#videos ul')
+                        .append('<li><span></span></li>')
+                        .find('span:last')
+                        .addClass('loadVideo')
+                        .text(video.title)
+                        .click(function(){
+                            $(this).addClass('visited');
+                            player.loadVideo('http://youtu.be/' + video.id, function(){setLocationHash();} );
+                            $('body').goTo();
+                        });
+                });
+    </script>
+    
+    <script type="application/javascript">
+        // http://stackoverflow.com/questions/4801655/
+        jQuery.fn.goTo = function() {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top + 'px'
+            }, 'slow');
+            return this;
+        };
+    </script>
+    
+    <hr />
 
-	<div id="search">
-		<form onsubmit="ytSearch(); return false;" action="#">
-			<input type="text" id="searchQuery" placeholder="YouTube query" />
-			<button type="submit" >Search</button>
-		</form>
-		<div id="searchResults"></div>
-	</div>
-	<script type="text/javascript">
-		function ytSearch() {
-			var q = document.getElementById('searchQuery').value;
-			var url = 'https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&max-results=25&q=' +
-			          window.encodeURIComponent(q);
-			
-			jQuery.getJSON(url, function(json) {
-				if ('data' in json) {
-					var resultsDiv = $('#searchResults').empty();
-					console.log(json);
-					jQuery.each(json.data.items, function(i, item) {
-						console.log(item);
-						var id = item.id;
-						var title = item.title;
-						
-						var result = $('<div></div>').addClass('videoResult');
-						var thumbnail = $('<img>')
-							.attr('src', item.thumbnail.hqDefault)
-							.addClass('ytThumbnail')
-							.width(150);
-						
-						var title = $('<div>')
-							.text(item.title);
-						
-						result.click(function() {
-							player.loadVideo(item.player['default'], function(){setLocationHash();} );
-							$('body').goTo();
-						});
-						
-						result.append(thumbnail);
-						result.append(title);
-						resultsDiv.append(result);
-					});
-					$('#search').goTo();
-				}
-			});
-		}
-	</script>
-	
-	<a href="https://github.com/ShinNoNoir/likelines-player">
-		<img width="120" height="120" style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub">
-	</a>
-	<div id="footer">LikeLines is being developed under the <a href="http://www.cubrikproject.eu/">CUbRIK project</a>.</div>
-	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-	  ga('create', 'UA-39812719-1', 'dotcloud.com');
-	  ga('send', 'pageview');
-	</script>
+    <div id="search">
+        <form onsubmit="ytSearch(); return false;" action="#">
+            <input type="text" id="searchQuery" placeholder="YouTube query" />
+            <button type="submit" >Search</button>
+        </form>
+        <div id="searchResults"></div>
+    </div>
+    <script type="text/javascript">
+        function ytSearch() {
+            var q = document.getElementById('searchQuery').value;
+            var url = 'https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&max-results=25&q=' +
+                      window.encodeURIComponent(q);
+            
+            jQuery.getJSON(url, function(json) {
+                if ('data' in json) {
+                    var resultsDiv = $('#searchResults').empty();
+                    console.log(json);
+                    jQuery.each(json.data.items, function(i, item) {
+                        console.log(item);
+                        var id = item.id;
+                        var title = item.title;
+                        
+                        var result = $('<div></div>').addClass('videoResult');
+                        var thumbnail = $('<img>')
+                            .attr('src', item.thumbnail.hqDefault)
+                            .addClass('ytThumbnail')
+                            .width(150);
+                        
+                        var title = $('<div>')
+                            .text(item.title);
+                        
+                        result.click(function() {
+                            player.loadVideo(item.player['default'], function(){setLocationHash();} );
+                            $('body').goTo();
+                        });
+                        
+                        result.append(thumbnail);
+                        result.append(title);
+                        resultsDiv.append(result);
+                    });
+                    $('#search').goTo();
+                }
+            });
+        }
+    </script>
+    
+    <a href="https://github.com/ShinNoNoir/likelines-player">
+        <img width="120" height="120" style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+    <div id="footer">LikeLines is being developed under the <a href="http://www.cubrikproject.eu/">CUbRIK project</a>.</div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-39812719-1', 'dotcloud.com');
+      ga('send', 'pageview');
+    </script>
   </body>
 </html>
