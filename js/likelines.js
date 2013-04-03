@@ -377,7 +377,14 @@ LikeLines = {};
 		var d = this.getDuration();
 		var playback = LikeLines.Util.zeros(d);
 		
+		var video = this.options['videoCanonical'];
 		this.backend.aggregate(function (aggregate) {
+			// Ignore callback if different video has been loaded in the meantime
+			// TODO: Possibly merge this into a future LikeLines.BackendServer implementation 
+			if (video !== self.options['videoCanonical']) {
+				return;
+			}
+			
 			var playbacks = aggregate['playbacks'];
 			var likedPoints = undefined;
 			var myLikes = aggregate['myLikes'];
