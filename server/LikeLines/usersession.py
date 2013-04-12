@@ -41,5 +41,10 @@ def get_session_id():
 def get_serverside_session(session_id=None):
     if session_id is None:
         session_id = session['session_id']
+    
+    server_session = current_app.mongo.db.userSessions.find_one({'_id': session_id})
+    if not server_session:
+        server_session = empty_session_object(session_id)
+        current_app.mongo.db.userSessions.insert(server_session)
     return current_app.mongo.db.userSessions.find_one({'_id': session_id}) or empty_session_object(session_id)
 
