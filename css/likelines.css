@@ -2,6 +2,9 @@
 .LikeLines.player {
 	display: inline-block;
 }
+.LikeLines.player iframe {
+	border: 0;
+}
 .LikeLines.controls {
 	background: url('../images/sun20x20.png') 0px 1px no-repeat;
 	/*position: relative;*/
