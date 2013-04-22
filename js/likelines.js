@@ -857,7 +857,7 @@ LikeLines = {};
 		
 		if (hostname == 'youtu.be' || hostname == 'www.youtu.be') {
 			player = 'YouTube';
-			video = a.pathname.substring(1);
+			video = a.pathname.charAt(0) === '/' ? a.pathname.substring(1) : /* IE: */ a.pathname;
 		}
 		else if (hostname == 'youtube.com' || hostname == 'www.youtube.com') {
 			player = 'YouTube';
