@@ -256,7 +256,7 @@
         function ytSearch() {
             var q = document.getElementById('searchQuery').value;
             var url = 'https://gdata.youtube.com/feeds/api/videos?v=2&alt=jsonc&max-results=25&q=' +
-                      window.encodeURIComponent(q);
+                      window.encodeURIComponent(q) + '&callback=?';
             
             jQuery.getJSON(url, function(json) {
                 if ('data' in json) {
@@ -271,7 +271,8 @@
                         var thumbnail = $('<img>')
                             .attr('src', item.thumbnail.hqDefault)
                             .addClass('ytThumbnail')
-                            .width(150);
+                            .width(150)
+                            .height(113);
                         
                         var title = $('<div>')
                             .text(item.title);
