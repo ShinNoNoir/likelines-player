@@ -676,7 +676,15 @@ LikeLines = {};
 	LikeLines.GUI.Navigation.Heatmap.prototype.eventToTimepoint = function(e, domNode) {
 		var player = this.gui.llplayer;
 		var $node = $(domNode);
-		var x = e.pageX - $node.offset().left;
+		
+		// fix for issue 17
+		var x = -$node.offset().left;
+		if (e.clientX !== undefined) {
+			x += e.clientX + window.pageXOffset;
+		}
+		else {
+			x += e.pageX;
+		}
 		var w = $node.outerWidth();
 		var d = player.getDuration();
 		
