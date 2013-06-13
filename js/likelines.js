@@ -681,13 +681,10 @@ LikeLines = {};
 		var $node = $(domNode);
 		
 		// fix for issue 17
-		var x = -$node.offset().left;
-		if (e.clientX !== undefined) {
-			x += e.clientX + window.pageXOffset;
-		}
-		else {
-			x += e.pageX;
-		}
+		var x = e.clientX + 
+		        ((window.pageXOffset !== undefined) ? window.pageXOffset 
+		                                            : (document.documentElement || document.body).scrollLeft) - 
+		        $node.offset().left;
 		var w = $node.outerWidth();
 		var d = player.getDuration();
 		
