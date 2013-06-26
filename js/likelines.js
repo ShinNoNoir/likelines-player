@@ -150,13 +150,10 @@ LikeLines = {};
 					'onReady': function (evt) {
 						self.llplayer.gui.onInternalPlayerChanged(self, player.internalPlayer.ytplayer.getIframe());
 						self.ready = true;
-						// temporary YT workaround for https://code.google.com/p/gdata-issues/issues/detail?id=4706
-						self.ytplayer.addEventListener('onStateChange', function (evt) { self.onPlayerStateChange(evt); });
-						self.onPlayerStateChange( {'data': -1} );
 						if (onReady)
 							onReady();
 					},
-					//'onStateChange': function (evt) { self.onPlayerStateChange(evt); },
+					'onStateChange': function (evt) { self.onPlayerStateChange(evt); },
 					'onError': function (evt) { console.log('onError', evt); } // TODO: onError is not used. Idea: use metadata.error?
 				},
 				playerVars: {
