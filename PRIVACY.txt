@@ -1,0 +1,80 @@
+=== About this policy ===
+This privacy and cookie policy governs only
+    
+    the LikeLines open source software and services ("LikeLines")
+    
+that are under control by:
+    
+    the Delft Multimedia Information Retrieval lab 
+    of the Delft University of Technology
+    and its researchers ("We" or "Us").
+    
+We do not control the privacy practices of third parties that run their own 
+LikeLines servers. LikeLines records your behavior in order to provide you, 
+the user, a richer experience in watching online videos by providing more 
+enjoyable non-linear video access. This policy describes the information about 
+the user ("You" or "Your") that is being recorded, where it is stored, for 
+which purposes and whom has access to it this information.
+
+
+=== Information collected by the LikeLines software ===
+LikeLines records the following information about the interactions you perform 
+with the video player:
+
+ * The URL of the video loaded into the player and when (the local time of 
+   your computer) it was loaded;
+ * The current playback position in the video when you play, pause and seek in 
+   the video;
+ * When (the local time of your computer) you play, pause and seek the video;
+ * Periodically, the current playback position in the video and the local time 
+   of your computer;
+ * The current playback position in the video when you click the Like button;
+ * When (the local time of your computer) you click the Like button.
+
+
+=== Storage and transmission of collected information ===
+LikeLines stores collected information at a LikeLines server. The player 
+component of LikeLines sends this information (described in the previous 
+section) coupled with an identity tracking token (described in the next 
+section) to the server periodically. Information is sent through a secure 
+channel (https), but only if LikeLines service itself is accessed through a 
+secure channel.
+
+
+=== Identity tracking through cookies ===
+LikeLines makes use of persistent cookies to track identities. Cookies are 
+small text files that are automatically created and stored by your Internet 
+browser. LikeLines cookies contain a unique identifying number that tracks you, 
+the user. The purpose of a LikeLines cookie is to recognize you on your next 
+visit without requiring you to login using a registered username and password.
+
+This identity tracking token is also stored at a LikeLines server together with 
+information collected by the LikeLines video player component. This token does 
+not contain or is derived from any personal information. This token is also 
+tied to a single browser on a single machine. If you, the user, access LikeLines
+on a different machine, the LikeLines server will treat you as a new identity.
+
+
+=== Purpose of recorded information ===
+All information previously described is collected by LikeLines for two purposes:
+
+ 1. The information is used by LikeLines itself in order to provide its 
+    non-linear video access service to its users.
+ 2. The information is used by us, researchers, for research on non-linear 
+    video access and retrieval and for improving the LikeLines service.
+
+
+=== Disclosure of recorded information ===
+Information collected by LikeLines is never disclosed to third parties without 
+your consent. LikeLines only exposes stored information in an anonymous, 
+aggregated form in order to allow LikeLines clients (such as the LikeLines 
+video player component) to compute the most interesting parts of a video.
+
+
+=== Adopting this privacy policy for third party developers ===
+We highly recommend third party developers to adopt our privacy practices when 
+setting up their own LikeLines services by using this policy document as a 
+template.
+
+(CC BY) Creative Commons Attribution 3.0
+Last updated: 2013-06-28

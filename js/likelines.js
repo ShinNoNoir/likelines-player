@@ -244,7 +244,7 @@ LikeLines = {};
 	};
 	
 	LikeLines.YouTube.InternalPlayer.prototype._fetchMetadata = function(callback) {
-		var metadata_url = 'http://gdata.youtube.com/feeds/api/videos/' +
+		var metadata_url = '//gdata.youtube.com/feeds/api/videos/' +
 		                   this.video[this.type] + '?v=2&alt=jsonc&prettyprint=true&callback=?';
 		
 		var self = this;
