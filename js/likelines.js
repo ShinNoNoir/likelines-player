@@ -955,7 +955,7 @@ LikeLines = {};
 		var n = (data || []).length;
 		var scaledArray;
 		
-		if (n == 0) {
+		if (n == 0 || newSize == 0) {
 			return LikeLines.Util.zeros(newSize);
 		}
 		else if (n <= 2) {
