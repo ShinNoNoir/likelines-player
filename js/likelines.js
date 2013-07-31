@@ -581,6 +581,9 @@ LikeLines = {};
 			
 			ctx.fillRect(i, 0, elWidth, elHeight);
 		}
+		
+		// store painted heatmap
+		this.heatmap_array = heatmap; 
 	};
 	LikeLines.GUI.Navigation.Heatmap.prototype.paintPalette = function(palette) {
 		// for debugging purposes
