@@ -228,18 +228,28 @@
                 }
             ];
         
-        $.each(videos, function(_,video) {
-                    $('#videos ul')
-                        .append('<li><span></span></li>')
-                        .find('span:last')
-                        .addClass('loadVideo')
-                        .text(video.title)
-                        .click(function(){
-                            $(this).addClass('visited');
-                            player.loadVideo('http://youtu.be/' + video.id, function(){setLocationHash();} );
-                            $('body').goTo();
-                        });
+        function createLoadVideoLink(youtube_id, title) {
+            var url = 'http://youtu.be/' + youtube_id;
+            return $(document.createElement('a'))
+                .addClass('loadVideo')
+                .text(title)
+                .attr('href', '#YouTube:' + youtube_id)
+                .click(function(evt) {
+                    var modifier = evt.metaKey || evt.altKey || evt.shiftKey || evt.ctrlKey;
+                    if (!modifier) {
+                        evt.preventDefault();
+                        
+                        $(this).addClass('visited');
+                        player.loadVideo(url, function(){setLocationHash();} );
+                        $('body').goTo();
+                    }
                 });
+        }
+        
+        $.each(videos, function(_,video) {
+            $('#videos ul')
+                .append($('<li></li>').append(createLoadVideoLink(video.id, video.title)));
+        });
     </script>
     
     <script type="application/javascript">
