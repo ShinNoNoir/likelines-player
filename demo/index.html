@@ -66,6 +66,8 @@
             cursor: pointer;
             
             text-align: left;
+            text-decoration: none;
+            color: black;
         }
         .videoResult:hover {
             background-color: gray;
@@ -228,22 +230,25 @@
                 }
             ];
         
+        function createLoadVideoEventHandler(url) {
+            return function(evt) {
+                var modifier = evt.metaKey || evt.altKey || evt.shiftKey || evt.ctrlKey;
+                if (!modifier) {
+                    evt.preventDefault();
+                    
+                    $(this).addClass('visited');
+                    player.loadVideo(url, function(){setLocationHash();} );
+                    $('body').goTo();
+                }
+            };
+        }
         function createLoadVideoLink(youtube_id, title) {
             var url = 'http://youtu.be/' + youtube_id;
             return $(document.createElement('a'))
                 .addClass('loadVideo')
                 .text(title)
                 .attr('href', '#YouTube:' + youtube_id)
-                .click(function(evt) {
-                    var modifier = evt.metaKey || evt.altKey || evt.shiftKey || evt.ctrlKey;
-                    if (!modifier) {
-                        evt.preventDefault();
-                        
-                        $(this).addClass('visited');
-                        player.loadVideo(url, function(){setLocationHash();} );
-                        $('body').goTo();
-                    }
-                });
+                .click(createLoadVideoEventHandler(url));
         }
         
         $.each(videos, function(_,video) {
@@ -286,7 +291,9 @@
                         var id = item.id;
                         var title = item.title;
                         
-                        var result = $('<div></div>').addClass('videoResult');
+                        var result = $('<a></a>')
+                            .addClass('videoResult')
+                            .attr('href', '#YouTube:' + id);
                         var thumbnail = $('<img>')
                             .attr('src', item.thumbnail.hqDefault)
                             .addClass('ytThumbnail')
@@ -296,10 +303,7 @@
                         var title = $('<div>')
                             .text(item.title);
                         
-                        result.click(function() {
-                            player.loadVideo(item.player['default'], function(){setLocationHash();} );
-                            $('body').goTo();
-                        });
+                        result.click(createLoadVideoEventHandler(item.player['default']));
                         
                         result.append(thumbnail);
                         result.append(title);
