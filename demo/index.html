@@ -36,7 +36,7 @@
         }
         #videos ul {
             list-style: none;
-            margin: 0;
+            margin: 0 0 0.5em;
         }
         #videos li {
             display: inline;
@@ -175,10 +175,7 @@
         <button id="toggleLL">Conventional player</button>
         <button id="newUser">New User</button>
     </div>
-    <div id="videos">
-        Featured videos:
-        <ul></ul>
-    </div>
+    <div id="videos"></div>
     
     <script type="text/javascript">
         $('#toggleLL').click(function (evt) {
@@ -207,28 +204,49 @@
             });
         })();
         
-        var videos = [
-                /*{
+        // TODO: add gYjxkGD7rLo 08xgGFk5fds wh_DEOlKVA0
+        var videoCats = ['Featured videos', 'Cat videos'];
+        var videos = {
+            'Featured videos': [
+                {
+                    id: 'gYjxkGD7rLo',
+                    title: 'Fashion Week NY' 
+                },
+                {
+                    id: '08xgGFk5fds',
+                    title: 'MANGO Fashion Show'
+                },
+                {
+                    id: 'wh_DEOlKVA0',
+                    title: 'Beachwear Fashion Show'
+                }
+            ],
+            'Cat videos': [
+                {
+                    id: 'wPTilA0XxYE',
+                    title: 'Cat experiments'    
+                },
+                {
+                    id: 'ogtG0ZKQOq4',
+                    title: 'Snoring cat'    
+                }
+
+            ],
+            'Old videos': [
+                {
                     id: 'Jd3-eiid-Uw',
                     title: 'Wii Remote Head-tracking'
                 },
                 {
                     id: '_DeQUW-bFZ0',
                     title: 'Nintendo E3 press conf'    
-                },*/
-                {
-                    id: 'wPTilA0XxYE',
-                    title: 'Cat experiments'    
                 },
                 {
-                    id: 'qmozsGBYAV8',
+                    id: 'qmozsGBYAV8', /* DEAD */
                     title: 'Stella McCartney: Summer 2010 Fashion Show'
-                },
-                {
-                    id: 'ogtG0ZKQOq4',
-                    title: 'Snoring cat'    
                 }
-            ];
+            ]
+        };
         
         function createLoadVideoEventHandler(url) {
             return function(evt) {
@@ -251,9 +269,14 @@
                 .click(createLoadVideoEventHandler(url));
         }
         
-        $.each(videos, function(_,video) {
-            $('#videos ul')
-                .append($('<li></li>').append(createLoadVideoLink(video.id, video.title)));
+        $.each(videoCats, function(_,cat) {
+            var $ul = $('<ul></ul>');
+            $('#videos').append(document.createTextNode(cat + ':'))
+                        .append($ul);
+            
+            $.each(videos[cat], function(_,video) {
+                $ul.append($('<li></li>').append(createLoadVideoLink(video.id, video.title)));
+            });
         });
     </script>
     
