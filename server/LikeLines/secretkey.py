@@ -8,6 +8,9 @@ import os
 import sys
 import base64
 
+from hashlib import sha1
+from hmac import new as hmac
+
 def generate_secret_key():
     return base64.b64encode(os.urandom(KEY_STRENGTH))
     
@@ -25,6 +28,9 @@ def load_secret_key(path, app=None):
     
     if app is not None:
         app.secret_key = secret_key
+
+def compute_signature(key, msg):
+    return "%s" % hmac(key, msg, sha1).digest().encode('base64')[:-1]
 
 if __name__ == '__main__':
     print generate_secret_key()

@@ -7,6 +7,7 @@ from flaskutil import jsonp
 
 from usersession import get_session_id, get_serverside_session
 from tokengen import generate_unique_token
+from secretkey import compute_signature
 
 import json
 
@@ -114,3 +115,21 @@ def processInteractionSession(interactions, playbacks, likedPoints):
         playback.append( (curStart, last_last_tc) )
     
     playbacks.append(playback)
+
+
+@blueprint.route('/testKey', methods=['POST'])
+def LL_testKey():
+    try:
+        data = json.loads(request.data)
+        key = current_app.secret_key
+        
+        msg = data.get('msg','')
+        their_sig = data.get('sig','')
+        our_sig = compute_signature(key, msg)
+        
+        ok = our_sig == their_sig
+        
+        return jsonify({'ok': 'ok' if ok else 'no'}) 
+        
+    except ValueError, e:
+        return jsonify({'error': e.message})
