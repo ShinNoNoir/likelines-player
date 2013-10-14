@@ -36,7 +36,7 @@
         }
         #videos ul {
             list-style: none;
-            margin: 0;
+            margin: 0 0 0.5em;
         }
         #videos li {
             display: inline;
@@ -66,6 +66,8 @@
             cursor: pointer;
             
             text-align: left;
+            text-decoration: none;
+            color: black;
         }
         .videoResult:hover {
             background-color: gray;
@@ -173,10 +175,7 @@
         <button id="toggleLL">Conventional player</button>
         <button id="newUser">New User</button>
     </div>
-    <div id="videos">
-        Featured videos:
-        <ul></ul>
-    </div>
+    <div id="videos"></div>
     
     <script type="text/javascript">
         $('#toggleLL').click(function (evt) {
@@ -205,41 +204,80 @@
             });
         })();
         
-        var videos = [
-                /*{
+        // TODO: add gYjxkGD7rLo 08xgGFk5fds wh_DEOlKVA0
+        var videoCats = ['Featured videos', 'Cat videos'];
+        var videos = {
+            'Featured videos': [
+                {
+                    id: 'gYjxkGD7rLo',
+                    title: 'Fashion Week NY' 
+                },
+                {
+                    id: '08xgGFk5fds',
+                    title: 'MANGO Fashion Show'
+                },
+                {
+                    id: 'wh_DEOlKVA0',
+                    title: 'Beachwear Fashion Show'
+                }
+            ],
+            'Cat videos': [
+                {
+                    id: 'wPTilA0XxYE',
+                    title: 'Cat experiments'    
+                },
+                {
+                    id: 'ogtG0ZKQOq4',
+                    title: 'Snoring cat'    
+                }
+
+            ],
+            'Old videos': [
+                {
                     id: 'Jd3-eiid-Uw',
                     title: 'Wii Remote Head-tracking'
                 },
                 {
                     id: '_DeQUW-bFZ0',
                     title: 'Nintendo E3 press conf'    
-                },*/
-                {
-                    id: 'wPTilA0XxYE',
-                    title: 'Cat experiments'    
                 },
                 {
-                    id: 'qmozsGBYAV8',
+                    id: 'qmozsGBYAV8', /* DEAD */
                     title: 'Stella McCartney: Summer 2010 Fashion Show'
-                },
-                {
-                    id: 'ogtG0ZKQOq4',
-                    title: 'Snoring cat'    
                 }
-            ];
+            ]
+        };
         
-        $.each(videos, function(_,video) {
-                    $('#videos ul')
-                        .append('<li><span></span></li>')
-                        .find('span:last')
-                        .addClass('loadVideo')
-                        .text(video.title)
-                        .click(function(){
-                            $(this).addClass('visited');
-                            player.loadVideo('http://youtu.be/' + video.id, function(){setLocationHash();} );
-                            $('body').goTo();
-                        });
-                });
+        function createLoadVideoEventHandler(url) {
+            return function(evt) {
+                var modifier = evt.metaKey || evt.altKey || evt.shiftKey || evt.ctrlKey;
+                if (!modifier) {
+                    evt.preventDefault();
+                    
+                    $(this).addClass('visited');
+                    player.loadVideo(url, function(){setLocationHash();} );
+                    $('body').goTo();
+                }
+            };
+        }
+        function createLoadVideoLink(youtube_id, title) {
+            var url = 'http://youtu.be/' + youtube_id;
+            return $(document.createElement('a'))
+                .addClass('loadVideo')
+                .text(title)
+                .attr('href', '#YouTube:' + youtube_id)
+                .click(createLoadVideoEventHandler(url));
+        }
+        
+        $.each(videoCats, function(_,cat) {
+            var $ul = $('<ul></ul>');
+            $('#videos').append(document.createTextNode(cat + ':'))
+                        .append($ul);
+            
+            $.each(videos[cat], function(_,video) {
+                $ul.append($('<li></li>').append(createLoadVideoLink(video.id, video.title)));
+            });
+        });
     </script>
     
     <script type="application/javascript">
@@ -276,7 +314,9 @@
                         var id = item.id;
                         var title = item.title;
                         
-                        var result = $('<div></div>').addClass('videoResult');
+                        var result = $('<a></a>')
+                            .addClass('videoResult')
+                            .attr('href', '#YouTube:' + id);
                         var thumbnail = $('<img>')
                             .attr('src', item.thumbnail.hqDefault)
                             .addClass('ytThumbnail')
@@ -286,10 +326,7 @@
                         var title = $('<div>')
                             .text(item.title);
                         
-                        result.click(function() {
-                            player.loadVideo(item.player['default'], function(){setLocationHash();} );
-                            $('body').goTo();
-                        });
+                        result.click(createLoadVideoEventHandler(item.player['default']));
                         
                         result.append(thumbnail);
                         result.append(title);
