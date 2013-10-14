@@ -88,6 +88,8 @@ def LL_aggregate():
         numSessions += 1
         processInteractionSession(interactionSession['interactions'], playbacks, likedPoints)
     
+    mca = getMCAFromDB(videoId)
+    
     aggregate = dict(numSessions=numSessions, playbacks=playbacks, seeks=seeks, mca=mca, likedPoints = likedPoints, myLikes=myLikes)
     return jsonify(aggregate)
 
@@ -117,6 +119,20 @@ def processInteractionSession(interactions, playbacks, likedPoints):
     playbacks.append(playback)
 
 
+def getMCAFromDB(videoId):
+    mongo = current_app.mongo
+    mca = mongo.db.mca.find_one({'_id': videoId})
+    if mca:
+        del mca['_id']
+        for key in mca.keys():
+            if key.startswith('mca-'):
+                mca[key[4:]] = mca.pop(key)
+    else:
+        mca = {}
+    
+    return mca
+                
+
 @blueprint.route('/testKey', methods=['POST'])
 def LL_testKey():
     try:
@@ -133,3 +149,42 @@ def LL_testKey():
         
     except ValueError, e:
         return jsonify({'error': e.message})
+
+
+
+@blueprint.route('/postMCA', methods=['POST'])
+def LL_postMCA():
+    try:
+        raw_data = request.data
+        key = current_app.secret_key
+        their_sig = request.args.get('s')
+        our_sig = compute_signature(key, raw_data)
+        
+        ok = our_sig == their_sig
+        
+        if not ok:
+            return jsonify({'ok': 'no'})
+        
+        # EDIT ZONE BELOW ====
+        
+        data = json.loads(raw_data)
+        
+        videoId = data['videoId']
+        mcaName = data['mcaName']
+        mcaType = data['mcaType']
+        mcaData = data['mcaData']
+        
+        mongo = current_app.mongo
+        mongo.db.mca.update({'_id': videoId}, {'$set': {
+            'mca-%s' % mcaName: {
+                'type': mcaType,
+                'data': mcaData
+            }
+        }}, True)
+        mongo.db.interactionSessions.ensure_index('mca')
+        
+        return jsonify({'ok': 'ok'}) 
+        
+    except ValueError, e:
+        return jsonify({'error': e.message})
+
