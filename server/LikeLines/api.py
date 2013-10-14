@@ -133,3 +133,43 @@ def LL_testKey():
         
     except ValueError, e:
         return jsonify({'error': e.message})
+
+
+
+@blueprint.route('/postMCA', methods=['POST'])
+def LL_postMCA():
+    try:
+        raw_data = request.data
+        key = current_app.secret_key
+        their_sig = request.args.get('s')
+        our_sig = compute_signature(key, raw_data)
+        
+        ok = our_sig == their_sig
+        
+        if not ok:
+            return jsonify({'ok': 'no'})
+        
+        # EDIT ZONE BELOW ====
+        
+        data = json.loads(raw_data)
+        
+        videoId = data['videoId']
+        mcaName = data['mcaName']
+        mcaType = data['mcaType']
+        mcaData = data['mcaData']
+        
+        mongo = current_app.mongo
+        mongo.db.mca.update({'_id': videoId}, {'$set': {
+            #'_id': videoId,
+            'mca-%s' % mcaName: {
+                'type': mcaType,
+                'data': mcaData
+            }
+        }}, True)
+        mongo.db.interactionSessions.ensure_index('mca')
+        
+        return jsonify({'ok': 'ok'}) 
+        
+    except ValueError, e:
+        return jsonify({'error': e.message})
+
