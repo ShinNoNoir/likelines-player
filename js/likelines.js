@@ -617,7 +617,7 @@ LikeLines = {};
 			likes:     ['kernelSmooth',  likes],
 			playback:  ['scaleArray',    playback],
 			seeks:     ['kernelSmooth',  seeks],
-			mca:       ['scaleArray',    mca]
+			mca:       ['scaleArray',    undefined /*mca*/]
 		};
 		
 		for (var prop in timecodeEvidence) {
