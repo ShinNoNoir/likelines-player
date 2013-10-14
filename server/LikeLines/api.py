@@ -88,6 +88,8 @@ def LL_aggregate():
         numSessions += 1
         processInteractionSession(interactionSession['interactions'], playbacks, likedPoints)
     
+    mca = getMCAFromDB(videoId)
+    
     aggregate = dict(numSessions=numSessions, playbacks=playbacks, seeks=seeks, mca=mca, likedPoints = likedPoints, myLikes=myLikes)
     return jsonify(aggregate)
 
@@ -116,6 +118,20 @@ def processInteractionSession(interactions, playbacks, likedPoints):
     
     playbacks.append(playback)
 
+
+def getMCAFromDB(videoId):
+    mongo = current_app.mongo
+    mca = mongo.db.mca.find_one({'_id': videoId})
+    if mca:
+        del mca['_id']
+        for key in mca.keys():
+            if key.startswith('mca-'):
+                mca[key[4:]] = mca.pop(key)
+    else:
+        mca = {}
+    
+    return mca
+                
 
 @blueprint.route('/testKey', methods=['POST'])
 def LL_testKey():
@@ -160,7 +176,6 @@ def LL_postMCA():
         
         mongo = current_app.mongo
         mongo.db.mca.update({'_id': videoId}, {'$set': {
-            #'_id': videoId,
             'mca-%s' % mcaName: {
                 'type': mcaType,
                 'data': mcaData
