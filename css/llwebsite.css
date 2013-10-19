@@ -78,3 +78,26 @@ a.button:hover {
 p.livedemo {
 	text-align: center;
 }
+
+#footer {
+	border-top: 2px black solid;
+	clear: both;
+	vertical-align: top;
+	text-align: justify;
+}
+
+#footer > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#footer img {
+	border: 0;
+}
+
+#footer:after {
+    display:inline-block;
+    width:100%;
+    height: 0px;
+    content:'';
+}
