@@ -165,14 +165,14 @@ def LL_postMCA():
         if not ok:
             return jsonify({'ok': 'no'})
         
-        # EDIT ZONE BELOW ====
+        #################################################
         
         data = json.loads(raw_data)
         
-        videoId = data['videoId']
-        mcaName = data['mcaName']
-        mcaType = data['mcaType']
-        mcaData = data['mcaData']
+        videoId = data['videoId'] # string
+        mcaName = data['mcaName'] # string
+        mcaType = data['mcaType'] # "curve" | "point"
+        mcaData = data['mcaData'] # double[]
         
         mongo = current_app.mongo
         mongo.db.mca.update({'_id': videoId}, {'$set': {
