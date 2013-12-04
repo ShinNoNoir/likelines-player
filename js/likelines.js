@@ -393,6 +393,7 @@ LikeLines = {};
 			var playbacks = aggregate['playbacks'];
 			var likedPoints = undefined;
 			var myLikes = aggregate['myLikes'];
+			var mca = aggregate['mca'];
 			
 			if (limit === undefined) {
 				limit = playbacks.length;
@@ -422,7 +423,7 @@ LikeLines = {};
 				likedPoints, /*likes*/
 				playback, /* playback */
 				undefined, /* seeks */
-				undefined /* mca */
+				mca /* mca */
 			);
 			self.gui.heatmap.paintHeatmap(heatmap);
 			
@@ -601,8 +602,12 @@ LikeLines = {};
 		 * duration: number of seconds of corresponding video
 		 * likes: [timepoints] of likes
 		 * playback: [weights] per time bin from playing behaviour
-		 * seeks: [timepoints] of seeks
-		 * mca: [weights] per time bin from content analysis
+		 * seeks: [timepoints] of seeks [unimplemented, subject to change]
+		 * mca: {name: {
+		 *         "type":    "curve"|"point", 
+		 *         "data":    [weights]|[timepoints]
+		 *         "weight"?: weight
+		 *      }}
 		 */
 		var w = this.canvasWidth;
 		var heatmap = LikeLines.Util.zeros(w);
@@ -614,10 +619,10 @@ LikeLines = {};
 		
 		// convert all timecode-level evidence to an Array(w)
 		var timecodeEvidence = {
-			likes:     ['kernelSmooth',  likes],
-			playback:  ['scaleArray',    playback],
-			seeks:     ['kernelSmooth',  seeks],
-			mca:       ['scaleArray',    undefined /*mca*/]
+			likes:     ['point',  likes],
+			playback:  ['curve',    playback],
+			seeks:     ['point',  seeks],
+			mca:       ['curve',    undefined /*mca*/]
 		};
 		
 		for (var prop in timecodeEvidence) {
@@ -630,7 +635,7 @@ LikeLines = {};
 			}
 			
 			var arr;
-			if (op === 'kernelSmooth') {
+			if (op === 'point') {
 				var arr = [];
 				var f_smooth = LikeLines.Util.kernelSmooth(evidence, undefined, K);
 				var step = (duration-1 - 0)/(w-1);
@@ -641,7 +646,7 @@ LikeLines = {};
 				}
 				arr.push(f_smooth(duration-1, h));
 			}
-			else if (op === 'scaleArray') {
+			else if (op === 'curve') {
 				arr = LikeLines.Util.scaleArray(evidence, w);
 			}
 			
