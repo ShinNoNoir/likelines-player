@@ -376,7 +376,7 @@ LikeLines = {};
 		this.onPlaybackEvent('LIKE');
 	};
 	
-	LikeLines.Player.prototype.updateHeatmap = function (limit, nolikes) {
+	LikeLines.Player.prototype.updateHeatmap = function () {
 		var self = this;
 		
 		var d = this.getDuration();
@@ -391,16 +391,11 @@ LikeLines = {};
 			}
 			
 			var playbacks = aggregate['playbacks'];
-			var likedPoints = undefined;
+			var likedPoints = aggregate['likedPoints'];
 			var myLikes = aggregate['myLikes'];
 			var mca = aggregate['mca'];
 			
-			if (limit === undefined) {
-				limit = playbacks.length;
-			}
-			else {
-				limit = Math.min(limit, playbacks.length);
-			}
+			var limit = playbacks.length;
 			
 			for (var i=0; i < limit; i++) {
 				var playbackSession = playbacks[i];
@@ -413,10 +408,6 @@ LikeLines = {};
 						playback[s]++;
 					}
 				}
-			}
-			
-			if (!nolikes) {
-				likedPoints = aggregate['likedPoints'];
 			}
 			
 			var args = [
