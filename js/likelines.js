@@ -418,13 +418,16 @@ LikeLines = {};
 			if (!nolikes) {
 				likedPoints = aggregate['likedPoints'];
 			}
-						
-			var heatmap = self.gui.heatmap.computeHeatmap(d,
-				likedPoints, /*likes*/
+			
+			var args = [
+				d, /* duration */
+				likedPoints, /* likes */
 				playback, /* playback */
 				undefined, /* seeks */
 				mca /* mca */
-			);
+			];
+			self.gui.heatmap.computeHeatmapArgs = args;
+			var heatmap = self.gui.heatmap.computeHeatmap.apply(self.gui.heatmap, args);
 			self.gui.heatmap.paintHeatmap(heatmap);
 			
 			self.gui.heatmap.clearMarkers();
@@ -479,6 +482,7 @@ LikeLines = {};
 		this.canvasHeight = 16;
 		
 		this.markers = []; // Contains timepoints (Number) for now
+		this.computeHeatmapArgs = []; // Stores the arguments of the call to computeHeatmap in the aggregate callback
 		
 		$(this.node).addClass('LikeLines navigation')
 		            .append(this.heatmap)
