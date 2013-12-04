@@ -617,27 +617,28 @@ LikeLines = {};
 		var h = this.gui.llplayer.options.smoothingBandwidth;
 		var heatmapWeights = this.gui.llplayer.options.heatmapWeights;
 		
+		// TODO: add MCA stuff
 		// convert all timecode-level evidence to an Array(w)
-		var timecodeEvidence = {
+		var conversionTasks = {
 			likes:     ['point',  likes],
-			playback:  ['curve',    playback],
+			playback:  ['curve',  playback],
 			seeks:     ['point',  seeks],
-			mca:       ['curve',    undefined /*mca*/]
+			mca:       ['curve',  undefined /*mca*/]
 		};
+		var timecodeEvidence = {}
 		
-		for (var prop in timecodeEvidence) {
-			var op = timecodeEvidence[prop][0];
-			var evidence = timecodeEvidence[prop][1];
+		for (var evidenceName in conversionTasks) {
+			var evidenceType = conversionTasks[evidenceName][0];
+			var evidenceData = conversionTasks[evidenceName][1];
 			
-			if (evidence === undefined) {
-				delete timecodeEvidence[prop];
+			if (evidenceData === undefined) {
 				continue;
 			}
 			
 			var arr;
-			if (op === 'point') {
+			if (evidenceType === 'point') {
 				var arr = [];
-				var f_smooth = LikeLines.Util.kernelSmooth(evidence, undefined, K);
+				var f_smooth = LikeLines.Util.kernelSmooth(evidenceData, undefined, K);
 				var step = (duration-1 - 0)/(w-1);
 				
 				for (var i = 0; i < w-1; i++) {
@@ -646,8 +647,8 @@ LikeLines = {};
 				}
 				arr.push(f_smooth(duration-1, h));
 			}
-			else if (op === 'curve') {
-				arr = LikeLines.Util.scaleArray(evidence, w);
+			else if (evidenceType === 'curve') {
+				arr = LikeLines.Util.scaleArray(evidenceData, w);
 			}
 			
 			// For now, scale it to [-1,1]
@@ -663,10 +664,12 @@ LikeLines = {};
 					arr[i] /= scale;
 				}
 			}
-			timecodeEvidence[prop] = arr;
+			
+			// Store evidence of interestingness:
+			timecodeEvidence[evidenceName] = arr;
 		}
 		
-		
+		// weighted average of all timecodeEvidence
 		var scale = null;
 		for (var i=0; i < w; i++) {
 			for (var prop in timecodeEvidence) {
