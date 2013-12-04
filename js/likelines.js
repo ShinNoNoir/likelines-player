@@ -617,13 +617,57 @@ LikeLines = {};
 		var h = this.gui.llplayer.options.smoothingBandwidth;
 		var heatmapWeights = this.gui.llplayer.options.heatmapWeights;
 		
-		// TODO: add MCA stuff
+		// compute the MCA curve
+		var mcaCurve = LikeLines.Util.zeros(w);
+		for (var mcaName in mca) {
+			var curMca = mca[mcaName];
+			var mcaType = curMca['type'];
+			var mcaData = curMca['data'];
+			var mcaWeight = curMca['weight'] || 1.0;
+			
+			var arr;
+			if (mcaType === 'point') {
+				var arr = [];
+				var f_smooth = LikeLines.Util.kernelSmooth(mcaData, undefined, K);
+				var step = (duration-1 - 0)/(w-1);
+				
+				for (var i = 0; i < w-1; i++) {
+					var x = i*step;
+					arr.push(f_smooth(x, h));
+				}
+				arr.push(f_smooth(duration-1, h));
+			}
+			else if (mcaType === 'curve') {
+				arr = LikeLines.Util.scaleArray(mcaData, w);
+			}
+			
+			// Normalize to [-1,1]
+			var max, min;
+			max = min = arr[0];
+			for (var i = 1; i < w; i++) {
+				max = Math.max(max, arr[i]);
+				min = Math.min(min, arr[i]);
+			}
+			var scale = Math.max(Math.abs(min), Math.abs(max));
+			if (scale !== 0) {
+				for (var i = 0; i < w; i++) {
+					arr[i] /= scale;
+				}
+			}
+			
+			// add to mcaCurve
+			for (var i = 0; i < w; i++) {
+				mcaCurve[i] += arr[i]*mcaWeight;
+			}
+		}
+		// Note: no need to scale the curve; it's done below
+		
 		// convert all timecode-level evidence to an Array(w)
 		var conversionTasks = {
 			likes:     ['point',  likes],
 			playback:  ['curve',  playback],
 			seeks:     ['point',  seeks],
-			mca:       ['curve',  undefined /*mca*/]
+			mca:       ['curve',  mcaCurve]
 		};
 		var timecodeEvidence = {}
 		
