@@ -427,6 +427,12 @@ LikeLines = {};
 			}
 		});
 	};
+	LikeLines.Player.prototype.updateHeatmapCached = function () {
+		var self = this;
+		var args = this.gui.heatmap.computeHeatmapArgs;
+		var heatmap = this.gui.heatmap.computeHeatmap.apply(this.gui.heatmap, args);
+		this.gui.heatmap.paintHeatmap(heatmap);
+	};
 	
 	/*--------------------------------------------------------------------*
 	 * GUI
