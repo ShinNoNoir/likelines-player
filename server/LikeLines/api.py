@@ -165,7 +165,7 @@ def LL_postMCA():
         ok = our_sig == their_sig
         
         if not ok:
-            return jsonify({'ok': 'no'})
+            return jsonify({'ok': 'no', 'their_sig': their_sig, 'our_sig': our_sig})
         
         #################################################
         
@@ -173,19 +173,29 @@ def LL_postMCA():
         
         videoId = data['videoId'] # string
         mcaName = data['mcaName'] # string
-        mcaType = data['mcaType'] # "curve" | "point"
-        mcaData = data['mcaData'] # double[]
-        mcaWeight = data.get('mcaWeight', 1.0)
+        
+        delete = data.get('delete', False) == True
         
         mongo = current_app.mongo
-        mongo.db.mca.update({'_id': videoId}, {'$set': {
-            'mca-%s' % mcaName: {
-                'type': mcaType,
-                'data': mcaData,
-                'weight': mcaWeight
-            }
-        }}, True)
-        mongo.db.interactionSessions.ensure_index('mca')
+        if not delete:
+            mcaType = data['mcaType'] # "curve" | "point"
+            mcaData = data['mcaData'] # double[]
+            mcaWeight = data.get('mcaWeight', 1.0)
+            
+            mongo.db.mca.update({'_id': videoId}, {'$set': {
+                'mca-%s' % mcaName: {
+                    'type': mcaType,
+                    'data': mcaData,
+                    'weight': mcaWeight
+                }
+            }}, True)
+            mongo.db.interactionSessions.ensure_index('mca')
+        
+        else:
+            mongo.db.mca.update({'_id': videoId}, {'$unset': {
+                'mca-%s' % mcaName: ""
+            }})
+            
         
         return jsonify({'ok': 'ok'}) 
         
