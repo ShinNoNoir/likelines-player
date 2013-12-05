@@ -376,7 +376,7 @@ LikeLines = {};
 		this.onPlaybackEvent('LIKE');
 	};
 	
-	LikeLines.Player.prototype.updateHeatmap = function (limit, nolikes) {
+	LikeLines.Player.prototype.updateHeatmap = function () {
 		var self = this;
 		
 		var d = this.getDuration();
@@ -391,15 +391,11 @@ LikeLines = {};
 			}
 			
 			var playbacks = aggregate['playbacks'];
-			var likedPoints = undefined;
+			var likedPoints = aggregate['likedPoints'];
 			var myLikes = aggregate['myLikes'];
+			var mca = aggregate['mca'];
 			
-			if (limit === undefined) {
-				limit = playbacks.length;
-			}
-			else {
-				limit = Math.min(limit, playbacks.length);
-			}
+			var limit = playbacks.length;
 			
 			for (var i=0; i < limit; i++) {
 				var playbackSession = playbacks[i];
@@ -414,16 +410,15 @@ LikeLines = {};
 				}
 			}
 			
-			if (!nolikes) {
-				likedPoints = aggregate['likedPoints'];
-			}
-						
-			var heatmap = self.gui.heatmap.computeHeatmap(d,
-				likedPoints, /*likes*/
+			var args = [
+				d, /* duration */
+				likedPoints, /* likes */
 				playback, /* playback */
 				undefined, /* seeks */
-				undefined /* mca */
-			);
+				mca /* mca */
+			];
+			self.gui.heatmap.computeHeatmapArgs = args;
+			var heatmap = self.gui.heatmap.computeHeatmap.apply(self.gui.heatmap, args);
 			self.gui.heatmap.paintHeatmap(heatmap);
 			
 			self.gui.heatmap.clearMarkers();
@@ -431,6 +426,12 @@ LikeLines = {};
 				self.gui.heatmap.addMarker(myLikes[i]);
 			}
 		});
+	};
+	LikeLines.Player.prototype.updateHeatmapCached = function () {
+		var self = this;
+		var args = this.gui.heatmap.computeHeatmapArgs;
+		var heatmap = this.gui.heatmap.computeHeatmap.apply(this.gui.heatmap, args);
+		this.gui.heatmap.paintHeatmap(heatmap);
 	};
 	
 	/*--------------------------------------------------------------------*
@@ -478,6 +479,7 @@ LikeLines = {};
 		this.canvasHeight = 16;
 		
 		this.markers = []; // Contains timepoints (Number) for now
+		this.computeHeatmapArgs = []; // Stores the arguments of the call to computeHeatmap in the aggregate callback
 		
 		$(this.node).addClass('LikeLines navigation')
 		            .append(this.heatmap)
@@ -601,8 +603,12 @@ LikeLines = {};
 		 * duration: number of seconds of corresponding video
 		 * likes: [timepoints] of likes
 		 * playback: [weights] per time bin from playing behaviour
-		 * seeks: [timepoints] of seeks
-		 * mca: [weights] per time bin from content analysis
+		 * seeks: [timepoints] of seeks [unimplemented, subject to change]
+		 * mca: {name: {
+		 *         "type":    "curve"|"point", 
+		 *         "data":    [weights]|[timepoints]
+		 *         "weight"?: weight
+		 *      }}
 		 */
 		var w = this.canvasWidth;
 		var heatmap = LikeLines.Util.zeros(w);
@@ -612,27 +618,18 @@ LikeLines = {};
 		var h = this.gui.llplayer.options.smoothingBandwidth;
 		var heatmapWeights = this.gui.llplayer.options.heatmapWeights;
 		
-		// convert all timecode-level evidence to an Array(w)
-		var timecodeEvidence = {
-			likes:     ['kernelSmooth',  likes],
-			playback:  ['scaleArray',    playback],
-			seeks:     ['kernelSmooth',  seeks],
-			mca:       ['scaleArray',    undefined /*mca*/]
-		};
-		
-		for (var prop in timecodeEvidence) {
-			var op = timecodeEvidence[prop][0];
-			var evidence = timecodeEvidence[prop][1];
-			
-			if (evidence === undefined) {
-				delete timecodeEvidence[prop];
-				continue;
-			}
+		// compute the MCA curve
+		var mcaCurve = LikeLines.Util.zeros(w);
+		for (var mcaName in mca) {
+			var curMca = mca[mcaName];
+			var mcaType = curMca['type'];
+			var mcaData = curMca['data'];
+			var mcaWeight = curMca['weight'] || 1.0;
 			
 			var arr;
-			if (op === 'kernelSmooth') {
+			if (mcaType === 'point') {
 				var arr = [];
-				var f_smooth = LikeLines.Util.kernelSmooth(evidence, undefined, K);
+				var f_smooth = LikeLines.Util.kernelSmooth(mcaData, undefined, K);
 				var step = (duration-1 - 0)/(w-1);
 				
 				for (var i = 0; i < w-1; i++) {
@@ -641,8 +638,62 @@ LikeLines = {};
 				}
 				arr.push(f_smooth(duration-1, h));
 			}
-			else if (op === 'scaleArray') {
-				arr = LikeLines.Util.scaleArray(evidence, w);
+			else if (mcaType === 'curve') {
+				arr = LikeLines.Util.scaleArray(mcaData, w);
+			}
+			
+			// Normalize to [-1,1]
+			var max, min;
+			max = min = arr[0];
+			for (var i = 1; i < w; i++) {
+				max = Math.max(max, arr[i]);
+				min = Math.min(min, arr[i]);
+			}
+			var scale = Math.max(Math.abs(min), Math.abs(max));
+			if (scale !== 0) {
+				for (var i = 0; i < w; i++) {
+					arr[i] /= scale;
+				}
+			}
+			
+			// add to mcaCurve
+			for (var i = 0; i < w; i++) {
+				mcaCurve[i] += arr[i]*mcaWeight;
+			}
+		}
+		// Note: no need to scale the curve; it's done below
+		
+		// convert all timecode-level evidence to an Array(w)
+		var conversionTasks = {
+			likes:     ['point',  likes],
+			playback:  ['curve',  playback],
+			seeks:     ['point',  seeks],
+			mca:       ['curve',  mcaCurve]
+		};
+		var timecodeEvidence = {}
+		
+		for (var evidenceName in conversionTasks) {
+			var evidenceType = conversionTasks[evidenceName][0];
+			var evidenceData = conversionTasks[evidenceName][1];
+			
+			if (evidenceData === undefined) {
+				continue;
+			}
+			
+			var arr;
+			if (evidenceType === 'point') {
+				var arr = [];
+				var f_smooth = LikeLines.Util.kernelSmooth(evidenceData, undefined, K);
+				var step = (duration-1 - 0)/(w-1);
+				
+				for (var i = 0; i < w-1; i++) {
+					var x = i*step;
+					arr.push(f_smooth(x, h));
+				}
+				arr.push(f_smooth(duration-1, h));
+			}
+			else if (evidenceType === 'curve') {
+				arr = LikeLines.Util.scaleArray(evidenceData, w);
 			}
 			
 			// For now, scale it to [-1,1]
@@ -658,10 +709,12 @@ LikeLines = {};
 					arr[i] /= scale;
 				}
 			}
-			timecodeEvidence[prop] = arr;
+			
+			// Store evidence of interestingness:
+			timecodeEvidence[evidenceName] = arr;
 		}
 		
-		
+		// weighted average of all timecodeEvidence
 		var scale = null;
 		for (var i=0; i < w; i++) {
 			for (var prop in timecodeEvidence) {

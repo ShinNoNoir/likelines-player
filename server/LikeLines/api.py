@@ -116,7 +116,9 @@ def processInteractionSession(interactions, playbacks, likedPoints):
     if curStart is not None and last_last_tc is not None:
         playback.append( (curStart, last_last_tc) )
     
-    playbacks.append(playback)
+    # only add non-empty playbacks
+    if playback:
+        playbacks.append(playback)
 
 
 def getMCAFromDB(videoId):
@@ -165,20 +167,22 @@ def LL_postMCA():
         if not ok:
             return jsonify({'ok': 'no'})
         
-        # EDIT ZONE BELOW ====
+        #################################################
         
         data = json.loads(raw_data)
         
-        videoId = data['videoId']
-        mcaName = data['mcaName']
-        mcaType = data['mcaType']
-        mcaData = data['mcaData']
+        videoId = data['videoId'] # string
+        mcaName = data['mcaName'] # string
+        mcaType = data['mcaType'] # "curve" | "point"
+        mcaData = data['mcaData'] # double[]
+        mcaWeight = data.get('mcaWeight', 1.0)
         
         mongo = current_app.mongo
         mongo.db.mca.update({'_id': videoId}, {'$set': {
             'mca-%s' % mcaName: {
                 'type': mcaType,
-                'data': mcaData
+                'data': mcaData,
+                'weight': mcaWeight
             }
         }}, True)
         mongo.db.interactionSessions.ensure_index('mca')
