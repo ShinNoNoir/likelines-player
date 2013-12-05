@@ -17,8 +17,35 @@
         }
         
         #playercontainer {
+            position: relative;
             background: #444;
             padding: 20px;
+        }
+        
+        .hidden {
+            visibility: hidden;
+        }
+        #heatmapcontrols {
+            text-align: left;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255,0,0,0.6);
+            padding: 10px
+        }
+        #heatmapcontrols header { 
+            display: block;
+            font-weight: bold;
+        }
+        #heatmapcontrols label, #heatmapcontrols input {
+            width: 5em;
+            float: left;
+        }
+        #heatmapcontrols label, #heatmapcontrols button {
+            clear: left;
+        }
+        #heatmapcontrols button {
+            float: right;
         }
         
         #democontrols {
@@ -147,6 +174,21 @@
   <body>
     <h1>LikeLines demo</h1>
     <div id="playercontainer">
+        <div id="heatmapcontrols" class="hidden">
+            <form onsubmit="updateHeatmap(); return false;" action="#">
+            <header>Heat-map weights:</header>
+            <label for="wLikes">Likes</label>
+            <input type="text" value="1.0" name="wLikes" id="wLikes" />
+            
+            <label for="wPlayback">Playback</label>
+            <input type="text" value="1.0" name="wPlayback" id="wPlayback" />
+            
+            <label for="wMCA">MCA</label>
+            <input type="text" value="1.0" name="wMCA" id="wMCA" />
+            
+            <button type="submit">Update</button>
+            </form>
+          </div>
         <div id="player"></div>
     </div>
     <script type="text/javascript">
@@ -170,8 +212,17 @@
             }
         });
     </script>
+    <script type="text/javascript">
+        function updateHeatmap() {
+            player.options.heatmapWeights['likes'] = +$('#wLikes').val() || 0;
+            player.options.heatmapWeights['playback'] = +$('#wPlayback').val() || 0;
+            player.options.heatmapWeights['mca'] = +$('#wMCA').val() || 0;
+            player.updateHeatmapCached();
+        }
+    </script>
     
     <div id="democontrols">
+        <button id="toggleSettings">Settings</button>
         <button id="toggleLL">Conventional player</button>
         <button id="newUser">New User</button>
     </div>
@@ -189,6 +240,10 @@
                 btn.textContent = 'Conventional player';
                 $('.LikeLines').css('visibility', 'visible');
             }
+        });
+        
+        $('#toggleSettings').click(function (evt) {
+            $('#heatmapcontrols').toggleClass('hidden');
         });
         
         (function () {
