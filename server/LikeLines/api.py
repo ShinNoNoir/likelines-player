@@ -116,7 +116,9 @@ def processInteractionSession(interactions, playbacks, likedPoints):
     if curStart is not None and last_last_tc is not None:
         playback.append( (curStart, last_last_tc) )
     
-    playbacks.append(playback)
+    # only add non-empty playbacks
+    if playback:
+        playbacks.append(playback)
 
 
 def getMCAFromDB(videoId):
