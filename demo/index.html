@@ -202,11 +202,24 @@
             var load_video_id = 'wPTilA0XxYE';
         }
         
+        function parse_qs() {
+            var res = {}; 
+            var paramstr = window.location.search.substring(1);
+            var parampairs = paramstr.split("&");
+            for (i in parampairs) {
+                var pair = parampairs[i].split("=");
+                res[ pair[0] ] = pair[1];
+            }
+            return res;
+        }
+        var qs = parse_qs();
+        var READ_ONLY = (qs['readonly'] && qs['readonly'] == '1') ? true : false;
+        
         player = new LikeLines.Player('player', {
             //video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
             video: 'http://www.youtube.com/watch?v=' + load_video_id,
             backend: '//' + window.location.hostname + '/',
-            //backendReadOnly: true,
+            backendReadOnly: READ_ONLY,
             onReady: function () {
                 console.log('DEMO READY');
             },
