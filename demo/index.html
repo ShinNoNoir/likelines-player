@@ -22,6 +22,10 @@
             padding: 20px;
         }
         
+        #playercontainer.fullscreen {
+           /* TODO: implement */
+        }
+        
         .hidden {
             visibility: hidden;
         }
@@ -215,6 +219,13 @@
         var qs = parse_qs();
         var READ_ONLY = (qs['readonly'] && qs['readonly'] == '1') ? true : false;
         var BACKEND = qs['server'] || ('//' + window.location.hostname + '/');
+        var FULLSCREEN = (qs['fs'] && qs['fs'] == '1') ? true : false;
+        
+        if (FULLSCREEN) {
+            $(document).ready(function() {
+                $('#playercontainer').addClass('fullscreen');
+            });
+        }
         
         player = new LikeLines.Player('player', {
             //video: 'http://www.youtube.com/watch?v=ogtG0ZKQOq4',
