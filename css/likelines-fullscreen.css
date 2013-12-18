@@ -1,0 +1,89 @@
+.fullscreen { /* disable double-tap zoom for IE */
+	touch-action: manipulation;
+	-ms-touch-action: manipulation;
+}
+
+.fullscreen .LikeLines.player {
+	height: 100%;
+	width: 100%;
+}
+.fullscreen canvas {
+	height: 1cm;
+}
+.fullscreen .LikeLines.heatmap {
+	height: 1cm;
+	bottom: 0;
+}
+.fullscreen .LikeLines.video {
+	height: 100%;
+	width: 100%;
+	
+	padding-bottom: 1.3cm;
+	margin-bottom: -1.3cm;
+	padding-right: 3cm;
+	margin-right: -3cm;
+	
+	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+.fullscreen .LikeLines.controls {
+	width: 100%;
+	padding-right: 3cm;
+	margin-right: -3cm;
+	
+	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+}
+.fullscreen canvas {
+	width: 100%;
+}
+
+.fullscreen .LikeLines.video, .fullscreen .LikeLines.heatmap, .fullscreen .LikeLines.markersbar {
+	margin-left: inherit;
+}
+
+.fullscreen .LikeLines.controls {
+	background: none;
+}
+
+.fullscreen .LikeLines.navigation {
+	text-align: left;
+	position: relative; /* Required to stack in front of iframe */
+}
+
+.fullscreen .LikeLines.heatmap {
+	border: none;
+}
+.fullscreen .LikeLines.markersbar {
+	/*top: -2px; position: relative; */ /* needed for border */
+	
+	margin-top: -1cm;
+	margin-bottom: 0;
+	height: 1cm;
+	border: green 2px;
+	pointer-events: none;
+}
+
+
+.fullscreen button.LikeLines {
+	position: absolute;
+	right: 0;
+	width: 3cm;
+	height: 1.3cm;
+	background-size: auto 0.7cm !important;
+	background-position-y: center;
+	font-size: 0.6cm;
+}
+
+.fullscreen .LikeLines.like {
+	top: 0;
+	background: url('../images/sun20x20.png') #F0F0F0 0.2cm no-repeat;
+}
+
+
+
+.fullscreen .LikeLines.markersbar .marker {
+	width: 1cm;
+	height: 1cm;
+	background: url('../images/sun20x20.png') no-repeat;
+	background-size: auto 0.8cm !important;
+	background-position: center center;
+}

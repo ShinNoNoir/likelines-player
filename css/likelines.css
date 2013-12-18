@@ -54,6 +54,11 @@ iframe.LikeLines.video {
 	background: url('../images/sun20x20.png') #F0F0F0 2px no-repeat;
 }
 
+canvas.LikeLines.heatmap {
+	height: 100%;
+}
+
+
 /* DEBUG */
 /*
 .LikeLines.player {

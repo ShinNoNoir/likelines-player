@@ -486,8 +486,8 @@ LikeLines = {};
 		            .append(this.markersbar);
 		$(this.heatmap).addClass('LikeLines heatmap')
 		               .append(this.canvas);
-		$(this.canvas).width(this.canvasWidth)
-		              .height('100%')
+		$(this.canvas)// .width(this.canvasWidth)
+		              // .height('100%')
 		              .prop({
 		                  width: this.canvasWidth,
 		                  height: this.canvasHeight
