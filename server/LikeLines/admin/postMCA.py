@@ -53,9 +53,6 @@ def read_mca_file(path):
     else:
         return False
 
-def http_post(url, payload):
-    pass
-
 if __name__ == "__main__":
     parser = get_optionparser()
     options, args = parser.parse_args()
@@ -82,7 +79,7 @@ if __name__ == "__main__":
     
     if not options.server:
         print >>sys.stderr, '-s flag is required'
-        sys.exit(1)
+        sys.exit(-3)
     
     operation = OP_UPLOAD
     videoId, mcaName, mcaType, mcaFile = (args + [None]*4)[:4]
