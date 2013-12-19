@@ -3,7 +3,9 @@ Core API Blueprints.
 """
 
 from flask import Blueprint, current_app, jsonify, request
+from flask import Response
 from flaskutil import jsonp
+from pymongo.errors import DuplicateKeyError
 
 from usersession import get_session_id, get_serverside_session
 from tokengen import generate_unique_token
@@ -212,6 +214,71 @@ def LL_postMCA():
             
         
         return jsonify({'ok': 'ok'}) 
+        
+    except ValueError, e:
+        return jsonify({'error': e.message})
+
+
+@blueprint.route('/adminInteractions', methods=['POST'])
+def LL_adminInteractions():
+    def jsonify2(x):
+        return jsonify(x) if isinstance(x, dict) else Response(json.dumps(x, indent=2),  mimetype='application/json')
+    
+    try:
+        raw_data = request.data
+        key = current_app.secret_key
+        their_sig = request.args.get('s')
+        our_sig = compute_signature(key, raw_data)
+        
+        ok = our_sig == their_sig
+        
+        if not ok:
+            return jsonify({'ok': 'no', 'their_sig': their_sig, 'our_sig': our_sig})
+        
+        #################################################
+        
+        data = json.loads(raw_data)
+        
+        videoId = data['videoId'] # string
+        cmd = data['cmd'].lower() # "download" | "upload" | "delete"
+        interactionSessions = data.get('data') # json? 
+        
+        mongo = current_app.mongo
+        
+        res = None
+        if cmd == 'download':
+            res = []
+            for interactionSession in mongo.db.interactionSessions.find({'videoId': videoId}):
+                res.append(interactionSession)
+        
+        elif cmd == 'upload':
+            dups = []
+            wrongid = []
+            
+            for interactionSession in interactionSessions:
+                _id = interactionSession['_id']
+                if interactionSession['videoId'] != videoId:
+                    wrongid.append(_id)
+                    continue
+                
+                try:
+                    mongo.db.interactionSessions.insert(interactionSession)
+                except DuplicateKeyError:
+                    dups.append(_id)
+                    
+            res = {'ok': 'ok'}
+            if dups or wrongid:
+                res['skipped'] = {}
+                if dups:
+                    res['skipped']['duplicates'] = dups
+                if wrongid:
+                    res['skipped']['wrong_videoid'] = wrongid
+        
+        elif cmd == 'delete':
+            mongo.db.interactionSessions.remove({'videoId': videoId})
+            res = {'ok': 'ok'}
+        
+        return jsonify2(res)
         
     except ValueError, e:
         return jsonify({'error': e.message})
