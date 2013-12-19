@@ -312,7 +312,7 @@ LikeLines = {};
 		var cur_ts = new Date().getTime() / 1000;
 		var interaction = [cur_ts, evtType, this.getCurrentTime(), this.lastTickTC];
 		
-		var forceSend = evtType === 'ENDED' || evtType === 'LIKE';
+		var forceSend = evtType === 'ENDED' || evtType === 'LIKE' || evtType.substring(0, 4) === 'TAG_';
 		this.backend.sendInteractions([interaction], forceSend);
 	};
 	
@@ -372,8 +372,14 @@ LikeLines = {};
 	
 	LikeLines.Player.prototype.onLike = function () {
 		var now = this.getCurrentTime();
-		this.gui.heatmap.addMarker(now);
+		this.gui.heatmap.addMarker(now, 'LIKE');
 		this.onPlaybackEvent('LIKE');
+	};
+	
+	LikeLines.Player.prototype.onTag = function (tag, markerClass) {
+		var now = this.getCurrentTime();
+		this.gui.heatmap.addMarker(now, tag, markerClass);
+		this.onPlaybackEvent('TAG_' + tag);
 	};
 	
 	LikeLines.Player.prototype.updateHeatmap = function () {
@@ -423,7 +429,7 @@ LikeLines = {};
 			
 			self.gui.heatmap.clearMarkers();
 			for (var i=0; i < myLikes.length; i++) {
-				self.gui.heatmap.addMarker(myLikes[i]);
+				self.gui.heatmap.addMarker(myLikes[i], 'LIKE');
 			}
 		});
 	};
@@ -459,6 +465,18 @@ LikeLines = {};
 		$(this.likeButton).click(function(e) {
 			self.llplayer.onLike();
 		});
+	};
+	LikeLines.GUI.Default.prototype.addTagButton = function (label, tag, markerClass) {
+		var self = this;
+		var tagButton = $('<button>').text(label)
+		                             .addClass('LikeLines')
+		                             .addClass(markerClass)[0];
+		$(this.controls).append(tagButton);
+		
+		$(tagButton).click(function(e) {
+			self.llplayer.onTag(tag, markerClass);
+		});
+		return tagButton;
 	};
 	LikeLines.GUI.Default.prototype.onInternalPlayerChanged = function (internalPlayer, node) {
 		$(node).addClass('LikeLines video');
@@ -532,9 +550,11 @@ LikeLines = {};
 		$canvas.mousedown(mousedownHandler);
 		$heatmap.mousedown(mousedownHandler);
 	};
-	LikeLines.GUI.Navigation.Heatmap.prototype.addMarker = function(timepoint) {
+	LikeLines.GUI.Navigation.Heatmap.prototype.addMarker = function(timepoint, type, markerClass) {
 		var $ = jQuery;
 		var self = this;
+		markerClass = markerClass;
+		type = type || 'LIKE';
 		
 		if ($.inArray(timepoint, this.markers) !== -1) {
 			return;
@@ -545,6 +565,7 @@ LikeLines = {};
 		
 		var markersbar = $(this.markersbar);
 		var marker = $(document.createElement('div')).addClass('marker').appendTo(markersbar);
+		if (markerClass) marker.addClass(markerClass);
 		
 		var w = markersbar.outerWidth();
 		var d = this.gui.llplayer.getDuration();
@@ -552,6 +573,7 @@ LikeLines = {};
 		
 		marker.css('left', x);
 		marker.data('timepoint', timepoint);
+		marker.data('type', type);
 		marker.click(function (e) {
 			self.gui.llplayer.seekTo(timepoint, true);
 		});

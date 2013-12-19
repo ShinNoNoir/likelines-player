@@ -54,13 +54,22 @@ def LL_send_interactions():
             })
             
             likes = []
+            tags = []
             for ts, evtType, tc, last_tc in interactions:
                 if evtType == 'LIKE':
                     likes.append(tc)
+                elif evtType.startswith('TAG_'):
+                    tag = evtType[4:]
+                    tags.append( [tc, tag] )
             
             if likes:
                 mongo.db.userSessions.update({'_id': session_id}, {
                     '$pushAll': {'likes.%s' % (interactionSession['videoId']): likes}
+                })
+            
+            if tags:
+                mongo.db.userSessions.update({'_id': session_id}, {
+                    '$pushAll': {'tags.%s' % (interactionSession['videoId']): tags}
                 })
             
         else:
@@ -83,19 +92,20 @@ def LL_aggregate():
     seeks = None
     mca = None
     likedPoints = []
+    taggedPoints = []
     
     myLikes = userSession['likes'].get(videoId, [])
     
     for interactionSession in current_app.mongo.db.interactionSessions.find({'videoId': videoId}):
         numSessions += 1
-        processInteractionSession(interactionSession['interactions'], playbacks, likedPoints)
+        processInteractionSession(interactionSession['interactions'], playbacks, likedPoints, taggedPoints)
     
     mca = getMCAFromDB(videoId)
     
-    aggregate = dict(numSessions=numSessions, playbacks=playbacks, seeks=seeks, mca=mca, likedPoints = likedPoints, myLikes=myLikes)
+    aggregate = dict(numSessions=numSessions, playbacks=playbacks, seeks=seeks, mca=mca, likedPoints = likedPoints, myLikes=myLikes, taggedPoints=taggedPoints)
     return jsonify(aggregate)
 
-def processInteractionSession(interactions, playbacks, likedPoints):
+def processInteractionSession(interactions, playbacks, likedPoints, taggedPoints):
     playback = []
     curStart = None
     prev_tick = None
@@ -107,6 +117,10 @@ def processInteractionSession(interactions, playbacks, likedPoints):
         ts, evtType, tc, last_tc = curInteraction
         if evtType == 'LIKE':
             likedPoints.append(tc)
+        elif evtType.startswith('TAG_'):
+            tag = evtType[4:]
+            taggedPoints.append( [tc, tag] )
+            
         elif evtType == 'PLAYING':
             if curStart is not None:
                 playback.append( (curStart, last_tc) )
