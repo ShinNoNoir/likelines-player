@@ -7,7 +7,7 @@ import urllib, urllib2
 import json
 
 from optparse import OptionParser
-from secretkey import compute_signature
+from LikeLines.secretkey import compute_signature
 
 OP_UPLOAD, OP_DELETE = range(2)
 VALID_MCA_TYPES = ['curve', 'point']
