@@ -96,10 +96,13 @@ def LL_aggregate():
 def processInteractionSession(interactions, playbacks, likedPoints):
     playback = []
     curStart = None
-    last_tick = None
-    last_last_tc = None
+    prev_tick = None
+    prev_last_tc = None
+    prev_ts = None
+    prev_tc = None
     
-    for ts, evtType, tc, last_tc in sorted(interactions):
+    for curInteraction in sorted(interactions):
+        ts, evtType, tc, last_tc = curInteraction
         if evtType == 'LIKE':
             likedPoints.append(tc)
         elif evtType == 'PLAYING':
@@ -111,10 +114,21 @@ def processInteractionSession(interactions, playbacks, likedPoints):
                 playback.append( (curStart, last_tc) )
                 curStart = None
         
-        last_last_tc = last_tc
+        # issue 16
+        # Arbitrary factor: 30
+        elif evtType == 'TICK':
+            if prev_ts is not None and prev_tc is not None and (ts-prev_ts)*30 < (tc-prev_tc):
+                # Treat this as a skip and end the current interval
+                if curStart is not None:
+                    playback.append( (curStart, prev_tc) )
+                    curStart = tc
+        
+        prev_ts = ts
+        prev_tc = tc
+        prev_last_tc = last_tc
     
-    if curStart is not None and last_last_tc is not None:
-        playback.append( (curStart, last_last_tc) )
+    if curStart is not None and prev_last_tc is not None:
+        playback.append( (curStart, prev_last_tc) )
     
     # only add non-empty playbacks
     if playback:
