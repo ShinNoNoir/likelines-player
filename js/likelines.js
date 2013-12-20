@@ -801,6 +801,7 @@ LikeLines = {};
 		this.sessionToken = undefined;
 		this.readonly = options['backendReadOnly'];
 		this.options = options || LikeLines.options.defaults;
+		this.seenFirstNonTickEvent = false;
 	}
 	LikeLines.BackendServer.prototype.createNewInteractionSession = function () {
 		if (this.readonly) return;
@@ -828,10 +829,11 @@ LikeLines = {};
 			console.log('BackendServer.sendInteractions(): Warning: no back-end specified');
 			return;
 		}
+		this.seenFirstNonTickEvent = this.seenFirstNonTickEvent || this.containsNonTickEvent(interactions);
 		
 		var self = this;
 		var cur_ts = new Date().getTime() / 1000;
-		var canSend = this.lastSend+this.options.backendThrottle <= cur_ts;
+		var canSend = this.seenFirstNonTickEvent && (this.lastSend+this.options.backendThrottle <= cur_ts);
 		
 		this.buffer.push.apply(this.buffer, interactions);
 		if (this.sessionToken === undefined) {
@@ -851,6 +853,21 @@ LikeLines = {};
 			});
 			self.lastSend = cur_ts;
 		}
+		else if (this.buffer.length > 100) {
+			this.simplifyBuffer();
+		}
+	}
+	LikeLines.BackendServer.prototype.containsNonTickEvent = function (interactions) {
+		var n = interactions.length;
+		for (var i=0; i < n; i++) {
+			var evt = interactions[i];
+			var evtType = evt[1];
+			
+			if (evtType !== 'TICK') {
+				return true;
+			}
+		}
+		return false;
 	}
 	LikeLines.BackendServer.prototype.simplifyBuffer = function () {
 		var newBuffer = [];
