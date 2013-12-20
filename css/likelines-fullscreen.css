@@ -75,15 +75,51 @@
 
 .fullscreen .LikeLines.like {
 	top: 0;
+	padding-left: 40px;
+	text-align: left;
 	background: url('../images/sun20x20.png') #F0F0F0 0.2cm no-repeat;
 }
-
-
 
 .fullscreen .LikeLines.markersbar .marker {
 	width: 1cm;
 	height: 1cm;
 	background: url('../images/sun20x20.png') no-repeat;
 	background-size: auto 0.8cm !important;
-	background-position: center center;
+	background-position: center center !important;
 }
+
+.fullscreen button.LikeLines.goal {
+	top: 2cm;
+	padding-left: 40px;
+	text-align: left;
+	background: url('../images/soccer16x16.png') #F0F0F0 0.2cm no-repeat;
+	font-size: 0.45cm;
+	line-height: 0.45cm;
+}
+.fullscreen .LikeLines.markersbar .marker.goal {
+	background: url('../images/soccer16x16.png') no-repeat;
+}
+
+
+.fullscreen button.LikeLines.foul {
+	top: 3.35cm;
+	padding-left: 40px;
+	text-align: left;
+	background: url('../images/foul32x32.png') #F0F0F0 0.2cm no-repeat;
+	font-size: 0.45cm;
+	line-height: 0.45cm;
+}
+.fullscreen .LikeLines.markersbar .marker.foul {
+	background: url('../images/foul32x32.png') no-repeat;
+}
+
+.fullscreen button.LikeLines.boo {
+	top: 4.7cm;
+	padding-left: 40px;
+	text-align: left;
+	background: url('../images/boo32x32.png') #F0F0F0 0.2cm no-repeat;
+}
+.fullscreen .LikeLines.markersbar .marker.boo {
+	background: url('../images/boo32x32.png') no-repeat;
+}
+

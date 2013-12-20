@@ -241,6 +241,10 @@
             $(document).ready(function() {
                 $('html').addClass('fullscreen');
                 $('head').append('<meta name="viewport" content="width=device-width, user-scalable=no" />');
+                
+                player.gui.addTagButton('Nice goal!', 'GOAL', 'goal');
+                player.gui.addTagButton('Awful foul!', 'FOUL', 'foul');
+                player.gui.addTagButton('Boo!',    'BOO',  'boo');
             });
         }
         
