@@ -87,6 +87,11 @@
 	background-position: center center !important;
 }
 
+.fullscreen .LikeLines.markersbar .positionmarker {
+	height: 1cm;
+}
+
+
 .fullscreen button.LikeLines.goal {
 	top: 2cm;
 	padding-left: 40px;
