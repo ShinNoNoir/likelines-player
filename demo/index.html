@@ -236,6 +236,10 @@
         var READ_ONLY = (qs['readonly'] && qs['readonly'] == '1') ? true : false;
         var BACKEND = qs['server'] || ('//' + window.location.hostname + '/');
         var FULLSCREEN = (qs['fs'] && qs['fs'] == '1') ? true : false; /* mobile full-screen flag */
+        var MCA_ONLY = (qs['mcaonly'] && qs['mcaonly'] == '1') ? true : false;
+        
+        var heatmapWeights = MCA_ONLY ? {likes:0,playback: 0,seeks: 0, mca: 1} 
+                                      : heatmapWeights = LikeLines.options.defaults.heatmapWeights;
         
         if (FULLSCREEN) {
             $(document).ready(function() {
@@ -256,6 +260,7 @@
             onReady: function () {
                 console.log('DEMO READY');
             },
+            heatmapWeights: heatmapWeights,
             width: 853,
             height: 480
         });
