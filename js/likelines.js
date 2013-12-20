@@ -305,6 +305,7 @@ LikeLines = {};
 		this.ticker = window.setInterval(function () {
 			self.lastTickTC = self.getCurrentTime();
 			self.onPlaybackEvent('TICK');
+			self.gui.heatmap.updatePositionMarker();
 		}, 250);
 	};
 	
@@ -511,6 +512,7 @@ LikeLines = {};
 		                  height: this.canvasHeight
 		              });
 		$(this.markersbar).addClass('LikeLines markersbar');
+		this.positionMarker = this.addPositionMarker();
 		
 		var mousedownHandler = function(e) {
 			var domNode = this;
@@ -577,13 +579,43 @@ LikeLines = {};
 		marker.click(function (e) {
 			self.gui.llplayer.seekTo(timepoint, true);
 		});
+	};
+	LikeLines.GUI.Navigation.Heatmap.prototype.addPositionMarker = function() {
+		var $ = jQuery;
 		
+		var markersbar = $(this.markersbar);
+		var marker = $(document.createElement('div')).addClass('positionmarker').appendTo(markersbar);
+		
+		var timepoint = 0;
+		var w = markersbar.outerWidth();
+		var d = this.gui.llplayer.getDuration();
+		var x = timepoint*w/d - marker.outerWidth()/2; 
+		
+		marker.css('left', x);
+		marker.data('timepoint', timepoint);
+		return marker[0];
+	};
+	LikeLines.GUI.Navigation.Heatmap.prototype.updatePositionMarker = function(timepoint) {
+		var $ = jQuery;
+		var markersbar = $(this.markersbar);
+		var marker = $(this.positionMarker);
+		
+		if (timepoint === undefined) {
+			timepoint = this.gui.llplayer.getCurrentTime();
+		}
+		var w = markersbar.outerWidth();
+		var d = this.gui.llplayer.getDuration();
+		var x = timepoint*w/d - marker.outerWidth()/2; 
+		
+		marker.css('left', x);
+		marker.data('timepoint', timepoint);
 	};
 	LikeLines.GUI.Navigation.Heatmap.prototype.clearMarkers = function() {
 		var $ = jQuery;
 		
 		this.markers = [];
 		$(this.markersbar).empty();
+		this.positionMarker = this.addPositionMarker();
 	};
 	LikeLines.GUI.Navigation.Heatmap.prototype.paintHeatmap = function(heatmap) {
 		var ctx = this.canvas.getContext('2d');

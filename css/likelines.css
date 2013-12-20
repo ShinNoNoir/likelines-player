@@ -43,6 +43,15 @@ iframe.LikeLines.video {
 	cursor: pointer;
 }
 
+.LikeLines.markersbar .positionmarker {
+	position: absolute;
+	background: black;
+	width: 2px;
+	height: 10px;
+	z-index: 9;
+}
+
+
 .LikeLines.like {
 	background: url('../images/sun20x20bw.png') #F0F0F0 2px no-repeat;
 	padding-top: 2px;
