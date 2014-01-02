@@ -4,7 +4,7 @@ Core API Blueprints.
 
 from flask import Blueprint, current_app, jsonify, request
 from flask import Response
-from flaskutil import jsonp
+from flaskutil import jsonp, crossdomain, p3p
 from pymongo.errors import DuplicateKeyError
 
 from usersession import get_session_id, get_serverside_session
@@ -17,6 +17,8 @@ blueprint = Blueprint('api', __name__)
 
 
 @blueprint.route('/createSession')
+@crossdomain()
+@p3p
 @jsonp
 def LL_create_session():
     token = generate_unique_token()
@@ -39,6 +41,8 @@ def LL_create_session():
 
 
 @blueprint.route('/sendInteractions')
+@crossdomain()
+@p3p
 @jsonp
 def LL_send_interactions():
     mongo = current_app.mongo
@@ -82,6 +86,8 @@ def LL_send_interactions():
 
 
 @blueprint.route('/aggregate')
+@crossdomain()
+@p3p
 @jsonp
 def LL_aggregate():
     userSession = get_serverside_session()
