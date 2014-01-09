@@ -125,7 +125,7 @@ def processInteractionSession(interactions, playbacks, likedPoints, taggedPoints
             likedPoints.append(tc)
         elif evtType.startswith('TAG_'):
             tag = evtType[4:]
-            taggedPoints.append( [tc, tag] )
+            taggedPoints.append( (tc, tag) )
             
         elif evtType == 'PLAYING':
             if curStart is not None:
