@@ -12,6 +12,7 @@ from flask.ext.pymongo import PyMongo
 
 from debug import debug_pages
 from usersession import ensure_session, get_session_id
+from flaskutil import crossdomain, p3p
 import api
 
 from secretkey import load_secret_key
@@ -75,10 +76,14 @@ if __name__ == "__main__":
     app.mongo = create_db(app)
     
     @app.route("/")
+    @crossdomain()
+    @p3p
     def index():
         return "LikeLines Backend server. Your user session id: %s" % get_session_id()
     
     @app.route("/end_session")
+    @crossdomain()
+    @p3p
     def end_session():
         # throws away (client-side) session information
         del session['session_id']
