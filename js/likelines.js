@@ -285,6 +285,7 @@ LikeLines = {};
 	LikeLines.Player.prototype.onVideoLoaded = function () {
 		// TODO: add support for user event handlers?
 		console.log('onVideoLoaded');
+		var self = this;
 		
 		if (this.internalPlayer.type === 'HTML5') {
 			this.options['videoCanonical'] = video_url;
@@ -298,10 +299,14 @@ LikeLines = {};
 			this.backend.sendInteractions([], true);
 		}
 		this.backend = new LikeLines.BackendServer(this.options['backend'], this.options['videoCanonical'], this.options);
-		this.backend.createNewInteractionSession();
-		this.updateHeatmap();
+		this.backend.createNewInteractionSession(function (sessionToken) {
+			// Issue 20:
+			// serialize these two calls to prevent race condition 
+			// when no cookies have been set yet...
+			// (better solution: combine into single request?)
+			self.updateHeatmap();
+		});
 		
-		var self = this;
 		this.ticker = window.setInterval(function () {
 			self.lastTickTC = self.getCurrentTime();
 			self.onPlaybackEvent('TICK');
@@ -835,8 +840,11 @@ LikeLines = {};
 		this.options = options || LikeLines.options.defaults;
 		this.seenFirstNonTickEvent = false;
 	}
-	LikeLines.BackendServer.prototype.createNewInteractionSession = function () {
-		if (this.readonly) return;
+	LikeLines.BackendServer.prototype.createNewInteractionSession = function (cb) {
+		if (this.readonly) {
+			if (cb) cb();
+			return;
+		}
 		if (this.baseUrl === undefined) {
 			console.log('BackendServer.createNewInteractionSession(): Warning: no back-end specified');
 			return;
@@ -851,9 +859,11 @@ LikeLines = {};
 		}) + '&callback=?';
 		
 		jQuery.getJSON(url, function(json) {
-			self.sessionToken = json['token']
+			var token = json['token'];
+			self.sessionToken = token;
+			if (cb) cb(token);
 		});
-		return 0;
+		return;
 	};
 	LikeLines.BackendServer.prototype.sendInteractions = function (interactions, forceSend) {
 		if (this.readonly) return;
