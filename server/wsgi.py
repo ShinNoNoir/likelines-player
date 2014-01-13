@@ -11,6 +11,7 @@ with open('/home/dotcloud/environment.json') as fh:
 from LikeLines.server import create_app, create_db 
 from LikeLines.usersession import get_session_id
 from LikeLines.secretkey import load_secret_key
+from LikeLines.flaskutil import crossdomain, p3p
 from LikeLines.debug import debug_pages
 
 
@@ -30,10 +31,14 @@ app = create_app(dotcloud_config)
 app.mongo = create_db(app)
 
 @app.route("/")
+@crossdomain()
+@p3p
 def index():
     return "LikeLines Backend server. Your user session id: %s" % get_session_id()
 
 @app.route("/end_session")
+@crossdomain()
+@p3p
 def end_session():
     # throws away (client-side) session information
     del session['session_id']
