@@ -683,7 +683,10 @@ LikeLines = {};
 			var curMca = mca[mcaName];
 			var mcaType = curMca['type'];
 			var mcaData = curMca['data'];
-			var mcaWeight = curMca['weight'] || 1.0;
+			var mcaWeight = curMca['weight'];
+			if (mcaWeight === undefined) {
+				mcaWeight = 1.0;
+			}
 			
 			var arr;
 			if (mcaType === 'point') {
