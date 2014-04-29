@@ -37,6 +37,12 @@ def get_optionparser():
                       default=False,
                       help='Delete MCA')
     
+    parser.add_option('-w',
+                      dest='weight',
+                      default=1.0,
+                      type='float',
+                      help='Weight of MCA (default: 1.0)')
+    
     return parser
 
 def read_mca_file(path):
@@ -84,7 +90,7 @@ if __name__ == "__main__":
     operation = OP_UPLOAD
     videoId, mcaName, mcaType, mcaFile = (args + [None]*4)[:4]
     mcaData = None
-    mcaWeight = 1.0
+    mcaWeight = options.weight
     
     if options.delete:
         operation = OP_DELETE
