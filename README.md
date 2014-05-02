@@ -161,12 +161,8 @@ the demo can be started by pointing your HTML5-compatible browser to
 [http://localhost:8080/examples/demo.html](http://localhost:8080/examples/demo.html).
 
 ## Roadmap and plans
- * March 2013: Make LikeLines deployable on at least one cloud platform.
- * March 2013: Finalize support for content analysis indexing.
  * Future: Add HTML5 <video> support.
  * Future: Improve UI.
- * Future: Introduce a [SMILA](http://www.eclipse.org/smila/) component 
-   that treats a LikeLines server as a data source for indexing purposes.
 
 
 ## Acknowledgments
