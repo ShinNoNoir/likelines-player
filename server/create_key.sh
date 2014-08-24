@@ -1,7 +1,7 @@
 #!/bin/sh
 KEY_PATH=".likelines_secret_key"
 
-echo "[KEY] Generating seret key..."
+echo "[KEY] Generating secret key..."
 
 if [ -f "$KEY_PATH" ]; then
     echo "[KEY] Old key found in: $KEY_PATH"
