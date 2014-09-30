@@ -51,7 +51,7 @@ in JavaScript like in the example below:
   </script>
 ```
 
-The `LikeLines.Player` constructor requires to arguments:
+The `LikeLines.Player` constructor requires two arguments:
  1. A `div` or its `id` in which the LikeLines player will be embedded. 
  2. A configuration object.
 
